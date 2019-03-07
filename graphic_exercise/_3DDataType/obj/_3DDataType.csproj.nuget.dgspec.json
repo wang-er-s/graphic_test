@@ -1,0 +1,49 @@
+{
+  "format": 1,
+  "restore": {
+    "F:\\SVN\\graphic_exercise\\graphic_exercise\\_3DDataType\\_3DDataType.csproj": {}
+  },
+  "projects": {
+    "F:\\SVN\\graphic_exercise\\graphic_exercise\\_3DDataType\\_3DDataType.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\SVN\\graphic_exercise\\graphic_exercise\\_3DDataType\\_3DDataType.csproj",
+        "projectName": "_3DDataType",
+        "projectPath": "F:\\SVN\\graphic_exercise\\graphic_exercise\\_3DDataType\\_3DDataType.csproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "F:\\SVN\\graphic_exercise\\graphic_exercise\\_3DDataType\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net472": {}
+      },
+      "runtimes": {
+        "win7-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\netcoreapp2.1\_3DDataType.csprojAssemblyReference.cache
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\netcoreapp2.1\_3DDataType.csproj.CoreCompileInputs.cache
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\netcoreapp2.1\_3DDataType.AssemblyInfoInputs.cache
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\netcoreapp2.1\_3DDataType.AssemblyInfo.cs
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\bin\Debug\netcoreapp2.1\_3DDataType.deps.json
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\bin\Debug\netcoreapp2.1\_3DDataType.runtimeconfig.json
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\bin\Debug\netcoreapp2.1\_3DDataType.runtimeconfig.dev.json
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\bin\Debug\netcoreapp2.1\_3DDataType.dll
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\bin\Debug\netcoreapp2.1\_3DDataType.pdb
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\netcoreapp2.1\_3DDataType.dll
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\netcoreapp2.1\_3DDataType.pdb

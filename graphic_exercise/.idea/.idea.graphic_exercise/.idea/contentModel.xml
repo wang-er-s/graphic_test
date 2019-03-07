@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Administrator\.Rider2018.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Administrator\.Rider2018.3\system\resharper-host\local\Transient\ReSharperHost\v183\SolutionCaches\_graphic_exercise.163389788.00" t="ExcludeRecursive" />
+    <e p="F:\SVN\graphic_exercise\graphic_exercise" t="IncludeFlat">
+      <e p="_3DDataType" t="IncludeRecursive">
+        <e p="_3DDataType.csproj" t="IncludeRecursive" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Camera.cs" t="Include" />
+        <e p="Mathf.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net472" t="Include">
+              <e p="_3DDataType.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="RenderData" t="Include">
+          <e p="Camera.cs" t="Include" />
+          <e p="Color.cs" t="Include" />
+          <e p="Light.cs" t="Include" />
+          <e p="Material.cs" t="Include" />
+          <e p="Tools.cs" t="Include" />
+          <e p="Triangle.cs" t="Include" />
+          <e p="Vertex.cs" t="Include" />
+        </e>
+        <e p="TransformData" t="Include">
+          <e p="Matrix4x4.cs" t="Include" />
+          <e p="Transform.cs" t="Include" />
+          <e p="Vector2.cs" t="Include" />
+          <e p="Vector3.cs" t="Include" />
+          <e p="Vector4.cs" t="Include" />
+        </e>
+      </e>
+      <e p="graphic_exercise.sln" t="IncludeFlat" />
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>

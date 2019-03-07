@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c152c929-e7a4-44f7-b5bf-fa3e181e5931" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.graphic_exercise/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.graphic_exercise/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.graphic_exercise/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.graphic_exercise/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/graphic_exercise/v16/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/graphic_exercise/v16/.suo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/graphic_exercise/v16/Server/sqlite3/storage.ide" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/graphic_exercise/v16/Server/sqlite3/storage.ide" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/graphic_exercise/v16/Server/sqlite3/storage.ide-shm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/graphic_exercise/v16/Server/sqlite3/storage.ide-wal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/Mathf.cs" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/Mathf.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/RenderData/Light.cs" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/RenderData/Light.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/RenderData/Vertex.cs" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/RenderData/Vertex.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/TransformData/Matrix4x4.cs" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/TransformData/Matrix4x4.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/TransformData/Vector3.cs" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/TransformData/Vector3.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/_3DDataType.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/_3DDataType.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/obj/Debug/netcoreapp2.1/_3DDataType.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/obj/Debug/netcoreapp2.1/_3DDataType.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/obj/Debug/netcoreapp2.1/_3DDataType.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/obj/Debug/netcoreapp2.1/_3DDataType.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/obj/Debug/netcoreapp2.1/_3DDataType.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/obj/Debug/netcoreapp2.1/_3DDataType.csprojAssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/obj/_3DDataType.csproj.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/obj/_3DDataType.csproj.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/obj/_3DDataType.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/obj/_3DDataType.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/obj/_3DDataType.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/obj/_3DDataType.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/obj/_3DDataType.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/obj/_3DDataType.csproj.nuget.g.targets" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_3DDataType/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/_3DDataType/obj/project.packagespec.json" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/_3DDataType/Program.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" column="39" lean-forward="true" selection-start-line="7" selection-start-column="39" selection-end-line="7" selection-end-column="39" />
+              <folding>
+                <marker date="1551774604296" expanded="true" signature="6:35" ph="..." />
+                <marker date="1551774604296" expanded="true" signature="58:164" ph="{...}" />
+                <marker date="1551774604296" expanded="true" signature="78:162" ph="{...}" />
+                <marker date="1551774604296" expanded="true" signature="124:156" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/_3DDataType/RenderData/Light.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-102">
+              <folding>
+                <marker date="1551682301586" expanded="true" signature="6:66" ph="..." />
+                <marker date="1551682301586" expanded="true" signature="100:1757" ph="{...}" />
+                <marker date="1551682301586" expanded="true" signature="119:1755" ph="{...}" />
+                <marker date="1551682301586" expanded="true" signature="205:282" ph="/// 如果有衰减还有衰减系数，如果是聚光灯还有内部和外部的距离 ... " />
+                <marker date="1551682301586" expanded="true" signature="345:455" ph="{...}" />
+                <marker date="1551682301586" expanded="true" signature="578:1749" ph="{...}" />
+                <marker date="1551682301586" expanded="true" signature="1302:1560" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/_3DDataType/RenderData/Camera.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1100">
+              <caret line="74" column="27" selection-start-line="74" selection-start-column="27" selection-end-line="74" selection-end-column="27" />
+              <folding>
+                <marker date="1551752839154" expanded="true" signature="6:66" ph="..." />
+                <marker date="1551752839154" expanded="true" signature="100:3482" ph="{...}" />
+                <marker date="1551752839154" expanded="true" signature="120:3480" ph="{...}" />
+                <marker date="1551752839154" expanded="true" signature="309:364" ph="/// 观察角，弧度 ... " />
+                <marker date="1551752839154" expanded="true" signature="399:455" ph="/// 纵横比 长宽比 ... " />
+                <marker date="1551752839154" expanded="true" signature="493:552" ph="/// 近裁平面到原点的距离 ... " />
+                <marker date="1551752839154" expanded="true" signature="586:645" ph="/// 远裁平面到原点的距离 ... " />
+                <marker date="1551752839154" expanded="true" signature="787:1182" ph="{...}" />
+                <marker date="1551752839154" expanded="true" signature="1192:1246" ph="/// 求视图矩阵 ... " />
+                <marker date="1551752839154" expanded="true" signature="1339:2109" ph="{...}" />
+                <marker date="1551752839154" expanded="true" signature="2120:2387" ph="///  求投影矩阵 ... " />
+                <marker date="1551752839154" expanded="true" signature="2479:2821" ph="{...}" />
+                <marker date="1551752839154" expanded="true" signature="2831:2884" ph="/// 背面消隐 ... " />
+                <marker date="1551752839154" expanded="true" signature="2960:3474" ph="{...}" />
+                <marker date="1551752839154" expanded="true" signature="2983:3055" ph="/* 其中p1 P2 p3必定严格按照逆时针或者顺时针的顺序存储 ... */" />
+                <marker date="1551752839154" expanded="true" signature="3355:3438" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>Vector2</find>
+      <find>Vector3</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/_3DDataType/RenderData/Light.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///C# Console" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/_3DDataType/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/_3DDataType/RenderData/Camera.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/_3DDataType/Vector2.cs" />
+        <option value="$PROJECT_DIR$/_3DDataType/Vector4.cs" />
+        <option value="$PROJECT_DIR$/_3DDataType/Vector3.cs" />
+        <option value="$PROJECT_DIR$/_3DDataType/Triangle.cs" />
+        <option value="$PROJECT_DIR$/_3DDataType/Matrix4x4.cs" />
+        <option value="$PROJECT_DIR$/_3DDataType/Program.cs" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="373" />
+    <option name="y" value="158" />
+    <option name="width" value="1434" />
+    <option name="height" value="886" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="SolutionExplorer" proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="SolutionExplorer">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Project" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="graphic_exercise" type="24d0babc:SolutionExplorerModelNode" />
+            </path>
+            <path>
+              <item name="Project" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="graphic_exercise" type="24d0babc:SolutionExplorerModelNode" />
+              <item name="_3DDataType" type="24d0babc:SolutionExplorerModelNode" />
+            </path>
+            <path>
+              <item name="Project" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="graphic_exercise" type="24d0babc:SolutionExplorerModelNode" />
+              <item name="_3DDataType" type="24d0babc:SolutionExplorerModelNode" />
+              <item name="RenderData" type="24d0babc:SolutionExplorerModelNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+        <option name="show-all-files" value="false" />
+      </pane>
+      <pane id="FileSystemExplorer" />
+      <pane id="AssemblyExplorer" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
+    <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="Default" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="None" />
+      <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c152c929-e7a4-44f7-b5bf-fa3e181e5931" name="Default Changelist" comment="" />
+      <created>1551079671453</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1551079671453</updated>
+      <workItem from="1551079676523" duration="6683000" />
+      <workItem from="1551144510552" duration="5932000" />
+      <workItem from="1551774362394" duration="130000" />
+      <workItem from="1551774576245" duration="48000" />
+      <workItem from="1551774964157" duration="672000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="13465000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="373" y="158" width="1434" height="886" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info anchor="top" id="Errors In Solution" order="0" weight="0.32969433" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1783115" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Capture Tool" order="3" />
+      <window_info id="Favorites" order="4" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="NuGet" order="7" />
+      <window_info anchor="bottom" id="Performance Profiler" order="8" />
+      <window_info anchor="bottom" id="Docker" order="9" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="10" />
+      <window_info anchor="bottom" id="Database Changes" order="11" />
+      <window_info anchor="bottom" id="Unit Tests" order="12" />
+      <window_info anchor="bottom" id="Terminal" order="13" />
+      <window_info anchor="bottom" id="Event Log" order="14" side_tool="true" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Capture Analysis" order="3" />
+      <window_info anchor="right" id="Database" order="4" />
+      <window_info anchor="right" id="Unit Tests Coverage" order="5" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" suspend="NONE" type="DotNet Exception Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/_3DDataType/Vector3.cs" />
+    <entry file="file://$PROJECT_DIR$/_3DDataType/Vector2.cs" />
+    <entry file="file://$PROJECT_DIR$/_3DDataType/Vector4.cs" />
+    <entry file="file://$PROJECT_DIR$/_3DDataType/Triangle.cs" />
+    <entry file="file://$PROJECT_DIR$/_3DDataType/Matrix4x4.cs" />
+    <entry file="file://$PROJECT_DIR$/_3DDataType/RenderData/Light.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-102">
+          <folding>
+            <marker date="1551682301586" expanded="true" signature="6:66" ph="..." />
+            <marker date="1551682301586" expanded="true" signature="100:1757" ph="{...}" />
+            <marker date="1551682301586" expanded="true" signature="119:1755" ph="{...}" />
+            <marker date="1551682301586" expanded="true" signature="205:282" ph="/// 如果有衰减还有衰减系数，如果是聚光灯还有内部和外部的距离 ... " />
+            <marker date="1551682301586" expanded="true" signature="345:455" ph="{...}" />
+            <marker date="1551682301586" expanded="true" signature="578:1749" ph="{...}" />
+            <marker date="1551682301586" expanded="true" signature="1302:1560" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_3DDataType/RenderData/Camera.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1100">
+          <caret line="74" column="27" selection-start-line="74" selection-start-column="27" selection-end-line="74" selection-end-column="27" />
+          <folding>
+            <marker date="1551752839154" expanded="true" signature="6:66" ph="..." />
+            <marker date="1551752839154" expanded="true" signature="100:3482" ph="{...}" />
+            <marker date="1551752839154" expanded="true" signature="120:3480" ph="{...}" />
+            <marker date="1551752839154" expanded="true" signature="309:364" ph="/// 观察角，弧度 ... " />
+            <marker date="1551752839154" expanded="true" signature="399:455" ph="/// 纵横比 长宽比 ... " />
+            <marker date="1551752839154" expanded="true" signature="493:552" ph="/// 近裁平面到原点的距离 ... " />
+            <marker date="1551752839154" expanded="true" signature="586:645" ph="/// 远裁平面到原点的距离 ... " />
+            <marker date="1551752839154" expanded="true" signature="787:1182" ph="{...}" />
+            <marker date="1551752839154" expanded="true" signature="1192:1246" ph="/// 求视图矩阵 ... " />
+            <marker date="1551752839154" expanded="true" signature="1339:2109" ph="{...}" />
+            <marker date="1551752839154" expanded="true" signature="2120:2387" ph="///  求投影矩阵 ... " />
+            <marker date="1551752839154" expanded="true" signature="2479:2821" ph="{...}" />
+            <marker date="1551752839154" expanded="true" signature="2831:2884" ph="/// 背面消隐 ... " />
+            <marker date="1551752839154" expanded="true" signature="2960:3474" ph="{...}" />
+            <marker date="1551752839154" expanded="true" signature="2983:3055" ph="/* 其中p1 P2 p3必定严格按照逆时针或者顺时针的顺序存储 ... */" />
+            <marker date="1551752839154" expanded="true" signature="3355:3438" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_3DDataType/Program.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="39" lean-forward="true" selection-start-line="7" selection-start-column="39" selection-end-line="7" selection-end-column="39" />
+          <folding>
+            <marker date="1551774604296" expanded="true" signature="6:35" ph="..." />
+            <marker date="1551774604296" expanded="true" signature="58:164" ph="{...}" />
+            <marker date="1551774604296" expanded="true" signature="78:162" ph="{...}" />
+            <marker date="1551774604296" expanded="true" signature="124:156" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
