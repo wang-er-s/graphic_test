@@ -129,8 +129,7 @@ namespace _3DDataType
                 Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 3, 10)) * Matrix4x4.RotateY(rot) * Matrix4x4.RotateX(rot) * Matrix4x4.RotateZ(rot); 
                 Matrix4x4 viewMatrix = Camera.BuildViewMatrix(camera.eyePosition, camera.up, camera.lookAt);
                 Matrix4x4 projectionMatrix = Camera.BuildProjectionMatrix(camera.fov, camera.aspect, camera.zn, camera.zf);
-                //
-                rot += 0.05f;
+                //rot += 0.05f;
                 Draw(worldMatrix, viewMatrix, projectionMatrix);
                 pictureBox1.Image = Image.FromHbitmap(frameBuff.GetHbitmap());
             }
@@ -181,10 +180,10 @@ namespace _3DDataType
             SetProjectionTransform(p, ref p3);
 
             //裁剪 没搞明白 后面再加
-            //if (Clip(p1) == false && Clip(p2) == false && Clip(p3) == false)
-            //{ 
-            //    return;
-            //}
+            if (Clip(p1) == false && Clip(p2) == false && Clip(p3) == false)
+            { 
+                return;
+            }
             // TODO 上下这两个都需要透视除法 cvv裁切
             TransformToScreen(ref p1);
             TransformToScreen(ref p2);
@@ -193,14 +192,11 @@ namespace _3DDataType
             //--------------------光栅化阶段---------------------------
 
             if (rendMode == RenderMode.Wireframe)
-            {//线框模式
+            {
+                //线框模式
                 BresenhamDrawLine(p1, p2);
                 BresenhamDrawLine(p2, p3);
                 BresenhamDrawLine(p3, p1);
-                Console.WriteLine("p1 == "+p1.point);
-                Console.WriteLine("p2 == "+p2.point);
-                Console.WriteLine("p3 == "+p3.point);
-                Console.WriteLine("------------------");
             }
             else
             {
@@ -371,7 +367,12 @@ namespace _3DDataType
 
             for (int scanlineY = (int)v2.point.y; scanlineY <= v1.point.y; scanlineY++)
             {
-                BresenhamDrawLine(curx1, scanlineY, curx2, scanlineY);
+                Vertex vl = new Vertex();
+                //TODO 设置颜色 uv
+                vl.point = new Vector2(curx1, scanlineY);
+                Vertex vr = new Vertex();
+                vr.point = new Vector2(curx2, scanlineY);
+                BresenhamDrawLine(vl,vr);
                 curx1 += invslope1;
                 curx2 += invslope2;
             }
@@ -390,7 +391,12 @@ namespace _3DDataType
 
             for (int scanlineY = (int)v2.point.y; scanlineY >= v1.point.y; scanlineY--)
             {
-                BresenhamDrawLine(curx1, scanlineY, curx2, scanlineY);
+                Vertex vl = new Vertex();
+                //TODO 设置颜色 uv
+                vl.point = new Vector2(curx1, scanlineY);
+                Vertex vr = new Vertex();
+                vr.point = new Vector2(curx2, scanlineY);
+                BresenhamDrawLine(vl, vr);
                 curx1 += invslope1;
                 curx2 += invslope2;
             }
@@ -424,16 +430,12 @@ namespace _3DDataType
         #endregion
 
         #region 2DLine 算法
-        private void BresenhamDrawLine(Vertex v1,Vertex v2)
+        private void BresenhamDrawLine(Vertex v1, Vertex v2)
         {
-            BresenhamDrawLine(v1.point.x, v1.point.y, v2.point.x, v2.point.y);
-        }
-        private void BresenhamDrawLine(float startx,float starty, float endx,float endy)
-        {
-            int startX = (int)(Math.Round(startx, MidpointRounding.AwayFromZero));
-            int startY = (int)(Math.Round(starty, MidpointRounding.AwayFromZero));
-            int endX = (int)(Math.Round(endx, MidpointRounding.AwayFromZero));
-            int endY = (int)(Math.Round(endy, MidpointRounding.AwayFromZero));
+            int startX = (int)(Math.Round(v1.point.x, MidpointRounding.AwayFromZero));
+            int startY = (int)(Math.Round(v1.point.y, MidpointRounding.AwayFromZero));
+            int endX = (int)(Math.Round(v2.point.x, MidpointRounding.AwayFromZero));
+            int endY = (int)(Math.Round(v2.point.y, MidpointRounding.AwayFromZero));
             float disX = endX - startX;
             float disY = endY - startY;
             float k = 0;
