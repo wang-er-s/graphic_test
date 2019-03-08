@@ -119,10 +119,15 @@ namespace _3DDataType
             }
         }
 
+        public override string ToString()
+        {
+            return $"x={x} y={y} z={z} w={w}";
+        }
+
         public Vector4 Normalize()
         {
             if (magnitude > 0)
-                this /= this / magnitude;
+                this /= magnitude;
             else
                 this = Zero;
             return this;

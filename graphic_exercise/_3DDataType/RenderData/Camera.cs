@@ -6,11 +6,11 @@ namespace _3DDataType.RenderData
 {
     struct Camera
     {
-        public Vector3 eyePosition;
+        public Vector4 eyePosition;
         public Matrix4x4 viewMatrix;
         public Matrix4x4 projectionMatrix;
-        public Vector3 up;
-        public Vector3 lookAt;
+        public Vector4 up;
+        public Vector4 lookAt;
         /// <summary>
         /// 观察角，弧度
         /// </summary>
@@ -28,7 +28,7 @@ namespace _3DDataType.RenderData
         /// </summary>
         public float zf;
 
-        public Camera(Vector3 eyePosition, Vector3 up, Vector3 lookAt, float fov, float aspect, float zn, float zf)
+        public Camera(Vector4 eyePosition, Vector4 up, Vector4 lookAt, float fov, float aspect, float zn, float zf)
         {
             this.eyePosition = eyePosition;
             this.up = up;
@@ -90,7 +90,7 @@ namespace _3DDataType.RenderData
         {
             Matrix4x4 proj = new Matrix4x4();
 
-            proj[0, 0] = (float)(1 / Math.Tan(fov * 0.5f) * aspect);
+            proj[0, 0] = (float)(1 / (Math.Tan(fov * 0.5f) * aspect));
             proj[1, 1] = (float)(1 / Math.Tan(fov * 0.5f));
             proj[2, 2] = -(zf + zn) / (zf - zn);
             proj[3, 2] = -1.0f;

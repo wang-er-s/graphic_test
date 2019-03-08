@@ -28,9 +28,12 @@ namespace _3DDataType
         private RenderData.Color ambientColor;//全局环境光颜色 
         private RenderMode rendMode;//渲染模式
         private LightMode lightMode;//光照模式
-
-        private int width = 800;
-        private int height = 600;
+        private System.Drawing.Color[,] textureArray;//纹理颜色值
+        private bool canMove = false;
+        private int imgWidth = 512;
+        private int imgHeight = 512;
+        private int width = 800 + 16;
+        private int height = 600 + 40;
         public RenderDemo()
         {
             InitializeComponent();
@@ -38,61 +41,98 @@ namespace _3DDataType
 
         private void RenderDemo_Load(object sender, EventArgs e)
         {
-            //Image img = Image.FromFile(@"F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\Texture\texture.jpg");
-            //rendMode = RenderMode.Wireframe;
-            //lightMode = LightMode.On;
-            //Console.WriteLine(width);
+            Image img = Image.FromFile(@"F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\Texture\texture.jpg");
+            texture = new Bitmap(img, imgWidth, imgHeight);
+           
+            InitTexture();
+            rendMode = RenderMode.VertexColor;
+            lightMode = LightMode.On;
             frameBuff = new Bitmap(width, height);
-            //frameG = Graphics.FromImage(frameBuff);
-            //zBuff = new float[height, width];
-            //ambientColor = new RenderData.Color(1f, 1f, 1f);
-            //mesh = new Mesh(CubeTestData.pointList, CubeTestData.indexs, CubeTestData.uvs, CubeTestData.vertColors, CubeTestData.norlmas, QuadTestData.mat);
-            ////定义光照
-            //light = new Light(new Vector3(50, 0, 0), new RenderData.Color(1, 1, 1));
-            ////定义相机
-            //camera = new Camera(new Vector3(0, 0, 0), new Vector3(0, 0, 1), new Vector3(0, 0, 1), (float)System.Math.PI / 4, this.width / (float)this.height, 1f, 500f);
-
-            //System.Timers.Timer mainTimer = new System.Timers.Timer(1000 / 60f);
-
-            //mainTimer.Elapsed += new ElapsedEventHandler(Tick);
-            //mainTimer.AutoReset = true;
-            //mainTimer.Enabled = true;
-            //mainTimer.Start();
-
-            light = new Light(new Vector3(0, 0, 0), new RenderData.Color(0.5f, 0.5f, 0.5f));
-            Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 0, 10)) * (Matrix4x4.RotateY(rot) * Matrix4x4.RotateX(rot));
-            Vector3 eyeWorldPos = new Vector3(0, 0, -10);
-            Vertex v1 = new Vertex(new Vector4(10,100,0,0),new Vector3(0,0,1),0.5f,0.5f,0.5f,0.5f,0.5f);
-            Vertex v2 = new Vertex(new Vector4(200,200,0,0),new Vector3(0,0,1),0.5f,0.5f,0.5f,0.5f,0.5f);
-            Vertex v3 = new Vertex(new Vector4(100,10,0,0),new Vector3(0,0,1),0.5f,0.5f,0.5f,0.5f,0.5f);
+            frameG = Graphics.FromImage(frameBuff);
+            zBuff = new float[height, width];
             ambientColor = new RenderData.Color(1f, 1f, 1f);
-            //TriangleRasterization(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
-            
+            mesh = new Mesh(CubeTestData.pointList, CubeTestData.indexs, CubeTestData.uvs, CubeTestData.vertColors, CubeTestData.norlmas, QuadTestData.mat);
+            //定义光照
+            light = new Light(new Vector3(0, 0, -10), new RenderData.Color(1, 1, 1));
+            //定义相机
+            camera = new Camera(new Vector4(0, 5, 5, 1), new Vector4(0, 1, 0), new Vector4(0, 1, 30, 1), (float)System.Math.PI / 3, this.width / (float)this.height, 3, 30);
+
+            System.Timers.Timer mainTimer = new System.Timers.Timer(1000 / 60f);
+
+            MouseDown += OnMouseDown;
+            MouseUp += OnMouseUp;
+            MouseMove += OnMouseMove;
+
+            mainTimer.Elapsed += new ElapsedEventHandler(Tick);
+            mainTimer.AutoReset = true;
+            mainTimer.Enabled = true;
+            mainTimer.Start();
+
+
+            //Vertex v273 = new Vertex();
+            //v273.point = new Vector4(273, 368, -0.4);
+            //Vertex v2 = new Vertex();
+            //v2.point = new Vector4(200, 200, 0);
+            //Vertex v3 = new Vertex();
+            //v3.point = new Vector4(0, 300, 0);
+            //TriangleRasterization(v1, v2, v3);
+            //pictureBox1.Image = Image.FromHbitmap(frameBuff.GetHbitmap());
+
         }
 
-        private float rot = 0;
-        Graphics g = null;
+        private int startXPos = 0;
+
+        public void OnMouseDown(object sender, MouseEventArgs e)
+        {
+            Console.WriteLine(1111111111);
+            canMove = true;
+            startXPos = e.X;
+            Console.WriteLine("e.x = " + e.X);
+        }
+
+        private void OnMouseUp(object sender, MouseEventArgs e)
+        {
+            canMove = false;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (!canMove) return;
+            Console.WriteLine("y pos ======== "+e.X);
+            rot += (e.X - startXPos) * 0.01f;
+        }
+
+        /// <summary>
+        /// 保存纹理颜色值
+        /// </summary>
+        public void InitTexture()
+        {
+            textureArray = new System.Drawing.Color[imgWidth, imgHeight];
+            for (int i = 0; i < imgWidth; i++)
+            {
+                for (int j = 0; j < imgHeight; j++)
+                {
+                    textureArray[i, j] = texture.GetPixel(i, j);
+                }
+            }
+        }
+
+        private float rot = 0f;
 
         private void Tick(object sender, EventArgs e)
         {
             lock (frameBuff)
             {
                 ClearBuff();
-                rot += 0.05f;
+                
                 //*Matrix4x4.RotateX(rot)
-                Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 0, 10)) * (Matrix4x4.RotateY(rot) * Matrix4x4.RotateX(rot)); 
+                Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 3, 10)) * Matrix4x4.RotateY(rot) * Matrix4x4.RotateX(rot) * Matrix4x4.RotateZ(rot); 
                 Matrix4x4 viewMatrix = Camera.BuildViewMatrix(camera.eyePosition, camera.up, camera.lookAt);
                 Matrix4x4 projectionMatrix = Camera.BuildProjectionMatrix(camera.fov, camera.aspect, camera.zn, camera.zf);
                 //
+                rot += 0.05f;
                 Draw(worldMatrix, viewMatrix, projectionMatrix);
-
-                if (g == null)
-
-                {
-                    g = this.CreateGraphics();
-                }
-                g.Clear(System.Drawing.Color.Black);
-                g.DrawImage(frameBuff, 0, 0);
+                pictureBox1.Image = Image.FromHbitmap(frameBuff.GetHbitmap());
             }
         }
         private uint showTrisCount;//测试数据，记录当前显示的三角形数
@@ -103,7 +143,7 @@ namespace _3DDataType
             {
                 DrawTriangle(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2], m, v, p);
             }
-            Console.WriteLine("显示的三角形数：" + showTrisCount);
+            //Console.WriteLine("显示的三角形数：" + showTrisCount);
         }
 
         /// <summary>
@@ -130,10 +170,10 @@ namespace _3DDataType
             SetMVTransform(m, v, ref p3);
 
             //在相机空间进行背面消隐
-            //if (Camera.BackFaceCulling(p1, p2, p3) == false)
-            //{
-            //    return;
-            //}
+            if (Camera.BackFaceCulling(p1, p2, p3) == false)
+            {
+                return;
+            }
 
             //变换到齐次剪裁空间
             SetProjectionTransform(p, ref p1);
@@ -141,10 +181,10 @@ namespace _3DDataType
             SetProjectionTransform(p, ref p3);
 
             //裁剪 没搞明白 后面再加
-            if (Clip(p1) == false || Clip(p2) == false || Clip(p3) == false)
-            {
-                return;
-            }
+            //if (Clip(p1) == false && Clip(p2) == false && Clip(p3) == false)
+            //{ 
+            //    return;
+            //}
             // TODO 上下这两个都需要透视除法 cvv裁切
             TransformToScreen(ref p1);
             TransformToScreen(ref p2);
@@ -154,9 +194,13 @@ namespace _3DDataType
 
             if (rendMode == RenderMode.Wireframe)
             {//线框模式
-                BresenhamDrawLine(p1,p2);
+                BresenhamDrawLine(p1, p2);
                 BresenhamDrawLine(p2, p3);
                 BresenhamDrawLine(p3, p1);
+                Console.WriteLine("p1 == "+p1.point);
+                Console.WriteLine("p2 == "+p2.point);
+                Console.WriteLine("p3 == "+p3.point);
+                Console.WriteLine("------------------");
             }
             else
             {
@@ -169,7 +213,8 @@ namespace _3DDataType
         /// </summary>
         private void SetMVTransform(Matrix4x4 m, Matrix4x4 v, ref Vertex vertex)
         {
-            vertex.point = v * (m * vertex.point);
+            vertex.point =  m * vertex.point;
+            vertex.point = v * vertex.point;
         }
 
         /// <summary>
@@ -224,7 +269,7 @@ namespace _3DDataType
 
         #region 三角形光栅化算法
 
-        void TriangleRasterization(Vertex v1,Vertex v2,Vertex v3)
+        void TriangleRasterization(Vertex v1, Vertex v2, Vertex v3)
         {
             if (v1.point.y == v2.point.y)
             {
@@ -309,14 +354,14 @@ namespace _3DDataType
                     //三点共线
                     return;
                 }
-                FillRightTriangle(top, bottom, middle);
+                FillRightTriangle(top, middle, bottom);
             }
         }
 
         /// <summary>
         /// V1的下顶点，V2V3是上平行边   点顺序为逆序
         /// </summary>
-        void FillTopFlatTriangle(Vertex v1,Vertex v2, Vertex v3)
+        void FillTopFlatTriangle(Vertex v1, Vertex v2, Vertex v3)
         {
             float invslope1 = (v1.point.x - v2.point.x) / (v1.point.y - v2.point.y);
             float invslope2 = (v1.point.x - v3.point.x) / (v1.point.y - v3.point.y);
@@ -376,14 +421,6 @@ namespace _3DDataType
             }
         }
 
-        /// <summary>
-        /// v1是上面的点，v3是下面的点，v2是中间的点
-        /// </summary>
-        void FillLeftTriangle(Vertex v1, Vertex v2, Vertex v3)
-        {
-            FillRightTriangle(v1, v3, v2);
-        }
-
         #endregion
 
         #region 2DLine 算法
@@ -391,7 +428,7 @@ namespace _3DDataType
         {
             BresenhamDrawLine(v1.point.x, v1.point.y, v2.point.x, v2.point.y);
         }
-        private void BresenhamDrawLine(float startx,float starty, float endx,float endy )
+        private void BresenhamDrawLine(float startx,float starty, float endx,float endy)
         {
             int startX = (int)(Math.Round(startx, MidpointRounding.AwayFromZero));
             int startY = (int)(Math.Round(starty, MidpointRounding.AwayFromZero));
@@ -422,7 +459,8 @@ namespace _3DDataType
                             curY--;
                     }
                     if (curX > 0 && curY > 0)
-                        frameBuff.SetPixel(curX, curY, System.Drawing.Color.Black);
+                        //TODO 差值计算颜色
+                        frameBuff.SetPixel(curX, curY, System.Drawing.Color.Red);
                     curX += stepX;
                 }
             }
@@ -445,8 +483,95 @@ namespace _3DDataType
                         else
                             curX--;
                     }
-                    frameBuff.SetPixel(curX, curY, System.Drawing.Color.Black);
+                    //TODO 差值计算颜色
+                    frameBuff.SetPixel(curX, curY, System.Drawing.Color.Red);
                     curY += stepY;
+                }
+            }
+        }
+
+        private void BresenhamDrawLine2(Vertex p1, Vertex p2)
+        {
+            int x = (int)(System.Math.Round(p1.point.x, MidpointRounding.AwayFromZero));
+            int y = (int)(System.Math.Round(p1.point.y, MidpointRounding.AwayFromZero));
+            int dx = (int)(System.Math.Round(p2.point.x - p1.point.x, MidpointRounding.AwayFromZero));
+            int dy = (int)(System.Math.Round(p2.point.y - p1.point.y, MidpointRounding.AwayFromZero));
+            int stepx = 1;
+            int stepy = 1;
+            //求w缓冲系数
+            float w = 0;
+            //插值因子
+            float t = 0;
+            //uv坐标
+            int u = 0;
+            int v = 0;
+            //最终颜色
+            if (dx >= 0)
+            {
+                stepx = 1;
+            }
+            else
+            {
+                stepx = -1;
+                dx = System.Math.Abs(dx);
+            }
+            if (dy >= 0)
+            {
+                stepy = 1;
+            }
+            else
+            {
+                stepy = -1;
+                dy = System.Math.Abs(dy);
+            }
+            int dx2 = 2 * dx;
+            int dy2 = 2 * dy;
+            if (dx > dy)
+            {
+                int max = dx;
+                if (max == 0)
+                {
+                    max = int.MaxValue;
+                }
+                int error = dy2 - dx;
+                if (x >= 0 && y >= 0 && x < width && y < height)
+                {
+                    frameBuff.SetPixel(x, y, System.Drawing.Color.Red);
+                }
+                if (error >= 0)
+                {
+                    error -= dx2;
+                    y += stepy;
+                }
+                error += dy2;
+                x += stepx;
+            }
+            else
+            {
+                int max = dy;
+                if (max == 0)
+                {
+                    max = int.MaxValue;
+                }
+                int error = dx2 - dy;
+                for (int i = 0; i < dy; i++)
+                {
+                    if (x >= 0 && y >= 0 && x < width && y < height)
+                    {
+                        frameBuff.SetPixel(x, y, System.Drawing.Color.Red);
+                    }
+                    else
+                    {
+
+                    }
+                    if (error >= 0)
+                    {
+                        error -= dy2;
+                        x += stepx;
+                    }
+                    error += dx2;
+                    y += stepy;
+
                 }
             }
         }

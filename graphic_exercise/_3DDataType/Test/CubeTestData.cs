@@ -10,58 +10,58 @@ namespace _3DDataType.Test
     class CubeTestData
     {
         //顶点坐标
-        public static Vector3[] pointList = {
-                                            new Vector3(-1,  1, -1),
-                                            new Vector3(-1, -1, -1),
-                                            new Vector3(1, -1, -1),
-                                            new Vector3(1, 1, -1),
+        public static Vector4[] pointList = {
+                                            new Vector4(-1,  1,-1,1),
+                                            new Vector4(-1, -1, -1,1),
+                                            new Vector4(1, -1, -1,1),
+                                            new Vector4(1, 1, -1,1),
 
-                                            new Vector3( -1,  1, 1),
-                                            new Vector3(-1, -1, 1),
-                                            new Vector3(1, -1, 1),
-                                            new Vector3(1, 1, 1)
+                                            new Vector4( -1,  1, 1,1),
+                                            new Vector4(-1, -1, 1,1),
+                                            new Vector4(1, -1, 1,1),
+                                            new Vector4(1, 1, 1,1)
                                         };
         //三角形顶点索引 12个面
-        public static int[] indexs = {   0,1,2,
-                                   0,2,3,
+        public static int[] indexs = {   0,3,2,
+                                   0,2,1,
                                    //
-                                   7,6,5,
-                                   7,5,4,
+                                   7,4,5,
+                                   7,5,6,
                                    //
-                                   0,4,5,
-                                   0,5,1,
+                                   4,0,1,
+                                   4,1,5,
                                    //
-                                   1,5,6,
-                                   1,6,2,
+                                   4,7,3,
+                                   4,3,0,
                                    //
-                                   2,6,7,
-                                   2,7,3,
+                                   6,5,1,
+                                   6,1,2,
                                    //
-                                   3,7,4,
-                                   3,4,0
+                                   3,7,6,
+                                   3,6,2
                                };
 
         //uv坐标
         public static Vector2[] uvs ={
-                                  new Vector2(0, 0),new Vector2( 0, 1),new Vector2(1, 1),
-                                   new Vector2(0, 0),new Vector2(1, 1),new Vector2(1, 0),
+                                  new Vector2(0, 1),new Vector2( 1, 1),new Vector2(1, 0),
+                                   new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, 0),
                                    //
-                                    new Vector2(0, 0),new Vector2( 0, 1),new Vector2(1, 1),
-                                   new Vector2(0, 0),new Vector2(1, 1),new Vector2(1, 0),
+                                   new Vector2(0, 1),new Vector2( 1, 1),new Vector2(1, 0),
+                                   new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, 0),
                                    //
-                                    new Vector2(0, 0),new Vector2( 0, 1),new Vector2(1, 1),
-                                   new Vector2(0, 0),new Vector2(1, 1),new Vector2(1, 0),
+                                    new Vector2(0, 1),new Vector2( 1, 1),new Vector2(1, 0),
+                                   new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, 0),
                                    //
-                                    new Vector2(0, 0),new Vector2( 0, 1),new Vector2(1, 1),
-                                   new Vector2(0, 0),new Vector2(1, 1),new Vector2(1, 0),
+                                   new Vector2(0, 1),new Vector2( 1, 1),new Vector2(1, 0),
+                                   new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, 0),
                                    //
-                                     new Vector2(0, 0),new Vector2( 0, 1),new Vector2(1, 1),
-                                   new Vector2(0, 0),new Vector2(1, 1),new Vector2(1, 0),
+                                     new Vector2(0, 1),new Vector2( 1, 1),new Vector2(1, 0),
+                                   new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, 0),
                                    ///
-                                     new Vector2(0, 0),new Vector2( 0, 1),new Vector2(1, 1),
-                                   new Vector2(0, 0),new Vector2(1, 1),new Vector2(1, 0)
-                              };
-        //顶点色
+                                     new Vector2(0, 1),new Vector2( 1, 1),new Vector2(1, 0),
+                                   new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, 0),
+
+                                         };
         public static Vector3[] vertColors = {
                                              new Vector3( 0, 1, 0), new Vector3( 0, 0, 1), new Vector3( 1, 0, 0),
                                                new Vector3( 0, 1, 0), new Vector3( 1, 0, 0), new Vector3( 0, 0, 1),
@@ -82,24 +82,25 @@ namespace _3DDataType.Test
                                                new Vector3( 0, 1, 0), new Vector3( 1, 0, 0), new Vector3( 0, 0, 1)
                                          };
         //法线
-        public static Vector3[] norlmas = {
-                                                new Vector3( 0, 0, -1), new Vector3(0, 0, -1), new Vector3( 0, 0, -1),
-                                               new Vector3(0, 0, -1), new Vector3( 0, 0, -1), new Vector3( 0, 0, -1),
-                                               //
-                                                new Vector3( 0, 0, 1), new Vector3( 0, 0, 1), new Vector3( 0, 0, 1),
-                                               new Vector3( 0, 0, 1), new Vector3( 0, 0, 1), new Vector3( 0, 0, 1),
-                                               //
-                                                new Vector3( -1, 0, 0), new Vector3( -1, 0, 0), new Vector3( -1, 0, 0),
-                                               new Vector3( -1, 0, 0), new Vector3(-1, 0, 0), new Vector3( -1, 0, 0),
-                                               //
-                                                new Vector3( 0, -1, 0), new Vector3(  0, -1, 0), new Vector3(  0, -1, 0),
-                                               new Vector3(  0, -1, 0), new Vector3( 0, -1, 0), new Vector3( 0, -1, 0),
-                                               //
-                                                new Vector3( 1, 0, 0), new Vector3( 1, 0, 0), new Vector3( 1, 0, 0),
-                                               new Vector3( 1, 0, 0), new Vector3( 1, 0, 0), new Vector3( 1, 0, 0),
-                                               //
-                                                new Vector3( 0, 1, 0), new Vector3( 0, 1, 0), new Vector3( 0, 1, 0),
-                                               new Vector3( 0, 1, 0 ), new Vector3(0, 1, 0), new Vector3( 0, 1, 0)
+        public static Vector4[] norlmas ={
+                                                //前032 021
+                                                new Vector3(-0.5773503f,0.5773503f,-0.5773503f),new Vector3(0.5773503f,0.5773503f,-0.5773503f), new Vector3(0.5773503f,-0.5773503f,-0.5773503f),
+                                                new Vector3(-0.5773503f,0.5773503f,-0.5773503f), new Vector3(0.5773503f,-0.5773503f,-0.5773503f), new Vector3(-0.5773503f,-0.5773503f,-0.5773503f),
+                                               //后 745 756
+                                                new Vector3(0.5773503f,0.5773503f,0.5773503f), new Vector3(-0.5773503f,0.5773503f,0.5773503f), new Vector3(-0.5773503f,-0.5773503f,0.5773503f),
+                                               new Vector3(0.5773503f,0.5773503f,0.5773503f), new Vector3(-0.5773503f,-0.5773503f,0.5773503f), new Vector3(0.5773503f,-0.5773503f,0.5773503f),
+                                               //左401 415
+                                                new Vector3(-0.5773503f,0.5773503f,0.5773503f), new Vector3(-0.5773503f,0.5773503f,-0.5773503f), new Vector3(-0.5773503f,-0.5773503f,-0.5773503f),
+                                                new Vector3(-0.5773503f,0.5773503f,0.5773503f), new Vector3(-0.5773503f,-0.5773503f,-0.5773503f), new Vector3(-0.5773503f,-0.5773503f,0.5773503f),
+                                               //上 473 430
+                                                new Vector3(-0.5773503f,0.5773503f,0.5773503f), new Vector3(0.5773503f,0.5773503f,0.5773503f), new Vector3(0.5773503f,0.5773503f,-0.5773503f),
+                                              new Vector3(-0.5773503f,0.5773503f,0.5773503f), new Vector3(0.5773503f,0.5773503f,-0.5773503f), new Vector3(-0.5773503f,0.5773503f,-0.5773503f),
+                                                //下 651 612
+                                                new Vector3(0.5773503f,-0.5773503f,0.5773503f), new Vector3(-0.5773503f,-0.5773503f,0.5773503f), new Vector3(-0.5773503f,-0.5773503f,-0.5773503f),
+                                               new Vector3(0.5773503f,-0.5773503f,0.5773503f), new Vector3(-0.5773503f,-0.5773503f,-0.5773503f), new Vector3(0.5773503f,-0.5773503f,-0.5773503f),
+                                                //右 376 362
+                                               new Vector3(0.5773503f,0.5773503f,-0.5773503f),  new Vector3(0.5773503f,0.5773503f,0.5773503f), new Vector3(0.5773503f,-0.5773503f,0.5773503f),
+                                               new Vector3(0.5773503f,0.5773503f,-0.5773503f),new Vector3(0.5773503f,-0.5773503f,0.5773503f), new Vector3(0.5773503f,-0.5773503f,-0.5773503f),
                                             };
         //材质
         public static Material mat = new Material(new Color(0, 0, 0.1f), 0.1f, new Color(0.3f, 0.3f, 0.3f), new Color(1, 1, 1), 99);
