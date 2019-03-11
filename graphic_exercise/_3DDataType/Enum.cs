@@ -30,8 +30,14 @@ namespace _3DDataType
     /// </summary>
     public enum LightMode
     {
-        On,
-        Off
+        ON,
+        OFF
+    }
+
+    public enum TextColor
+    {
+        ON,
+        OFF
     }
 
 }

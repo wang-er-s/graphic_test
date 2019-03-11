@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.RenderBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -42,9 +43,20 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
+            // RenderBtn
+            // 
+            this.RenderBtn.Location = new System.Drawing.Point(30, 25);
+            this.RenderBtn.Name = "RenderBtn";
+            this.RenderBtn.Size = new System.Drawing.Size(75, 23);
+            this.RenderBtn.TabIndex = 1;
+            this.RenderBtn.Text = "线框";
+            this.RenderBtn.UseVisualStyleBackColor = true;
+            this.RenderBtn.Click += new System.EventHandler(this.RenderBtn_Click);
+            // 
             // RenderDemo
             // 
             this.ClientSize = new System.Drawing.Size(1002, 623);
+            this.Controls.Add(this.RenderBtn);
             this.Controls.Add(this.pictureBox1);
             this.Name = "RenderDemo";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -58,5 +70,6 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button RenderBtn;
     }
 }

@@ -18,6 +18,11 @@ namespace _3DDataType.RenderData
         /// </summary>
         public Vector3 normal;
 
+        /// <summary>
+        /// 顶点深度值，用1/z表示
+        /// </summary>
+        public float depth;
+
         public Color pointColor;
 
         public Color lightingColor;
@@ -37,6 +42,7 @@ namespace _3DDataType.RenderData
             this.u = u;
             this.v = v;
             lightingColor = new Color(r,g,b);
+            depth = 1;
         }
 
         public Vertex(Vertex v)
@@ -48,6 +54,7 @@ namespace _3DDataType.RenderData
             this.u = v.u;
             this.v = v.v;
             this.lightingColor = v.lightingColor;
+            depth = 1;
         }
 
     }

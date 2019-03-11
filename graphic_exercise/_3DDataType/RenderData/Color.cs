@@ -84,6 +84,14 @@ namespace _3DDataType.RenderData
             return !(a == b);
         }
 
+        public System.Drawing.Color TransFormToSystemColor()
+        {
+            float r = Mathf.Clamp(this.r * 255, 0, 255);
+            float g = Mathf.Clamp(this.g * 255, 0, 255);
+            float b = Mathf.Clamp(this.b * 255, 0, 255);
+            return System.Drawing.Color.FromArgb((int)r, (int)g, (int)b);
+        }
+
         public bool Equals(Color other)
         {
             return this == other;
