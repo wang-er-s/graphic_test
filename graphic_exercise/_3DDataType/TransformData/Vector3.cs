@@ -5,9 +5,9 @@ namespace _3DDataType
 {
     public struct Vector3 : IEquatable<Vector3>
     {
-        
-        private static readonly Vector3 zeroVector3 = new Vector3(0.0f, 0.0f,0.0f);
-        private static readonly Vector3 oneVector3 = new Vector3(1, 1,1);
+
+        private static readonly Vector3 zeroVector3 = new Vector3(0.0f, 0.0f, 0.0f);
+        private static readonly Vector3 oneVector3 = new Vector3(1, 1, 1);
         private static readonly Vector3 upVector = new Vector3(0.0f, 1f, 0.0f);
         private static readonly Vector3 downVector = new Vector3(0.0f, -1f, 0.0f);
         private static readonly Vector3 leftVector = new Vector3(-1f, 0.0f, 0.0f);
@@ -29,7 +29,7 @@ namespace _3DDataType
         public float y;
         public float z;
 
-        public float magnitude => (float) Math.Sqrt(Dot(this,this));
+        public float magnitude => (float) Math.Sqrt(Dot(this, this));
 
         public static float Dot(Vector3 v1, Vector3 v2)
         {
@@ -38,7 +38,9 @@ namespace _3DDataType
 
         public static Vector3 Cross(Vector3 v1, Vector3 r2)
         {
-            return new Vector3((float) (v1.y * (double) r2.z - v1.z * (double) r2.y), (float) (v1.z * (double) r2.x - v1.x * (double) r2.z), (float) (v1.x * (double) r2.y - v1.y * (double) r2.x));
+            return new Vector3((float) (v1.y * (double) r2.z - v1.z * (double) r2.y),
+                (float) (v1.z * (double) r2.x - v1.x * (double) r2.z),
+                (float) (v1.x * (double) r2.y - v1.y * (double) r2.x));
         }
 
         public Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f)
@@ -52,27 +54,27 @@ namespace _3DDataType
         {
             return new Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
         }
-        
+
         public static Vector3 operator -(Vector3 v1, Vector3 v2)
         {
             return new Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
         }
-        
+
         public static Vector3 operator *(Vector3 v1, Vector3 v2)
         {
             return new Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
         }
-        
+
         public static Vector3 operator /(Vector3 v1, Vector3 v2)
         {
             return new Vector3(v1.x / v2.x, v1.y / v2.y, v1.z / v2.z);
         }
-        
+
         public static Vector3 operator *(Vector3 v1, float num)
         {
             return new Vector3(v1.x * num, v1.y * num, v1.z * num);
         }
-        
+
         public static Vector3 operator /(Vector3 v1, float num)
         {
             return new Vector3(v1.x / num, v1.y / num, v1.z / num);
@@ -134,6 +136,6 @@ namespace _3DDataType
             else
                 this = Zero;
             return this;
-        } 
+        }
     }
 }

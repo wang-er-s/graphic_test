@@ -26,7 +26,6 @@
           <e p="Light.cs" t="Include" />
           <e p="Material.cs" t="Include" />
           <e p="Mesh.cs" t="Include" />
-          <e p="Tools.cs" t="Include" />
           <e p="Triangle.cs" t="Include" />
           <e p="Vertex.cs" t="Include" />
         </e>

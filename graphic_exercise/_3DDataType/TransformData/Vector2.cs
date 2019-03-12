@@ -14,7 +14,7 @@ namespace _3DDataType
         public float x;
         public float y;
 
-        public float magnitude => (float) Math.Sqrt(x * x + y * y );
+        public float magnitude => (float) Math.Sqrt(x * x + y * y);
 
         public static float Dot(Vector2 v1, Vector2 v2)
         {
@@ -31,27 +31,27 @@ namespace _3DDataType
         {
             return new Vector2(v1.x + v2.x, v1.y + v2.y);
         }
-        
+
         public static Vector2 operator -(Vector2 v1, Vector2 v2)
         {
             return new Vector2(v1.x - v2.x, v1.y - v2.y);
         }
-        
+
         public static Vector2 operator *(Vector2 v1, Vector2 v2)
         {
             return new Vector2(v1.x * v2.x, v1.y * v2.y);
         }
-        
+
         public static Vector2 operator /(Vector2 v1, Vector2 v2)
         {
             return new Vector2(v1.x / v2.x, v1.y / v2.y);
         }
-        
+
         public static Vector2 operator *(Vector2 v1, float num)
         {
             return new Vector2(v1.x * num, v1.y * num);
         }
-        
+
         public static Vector2 operator /(Vector2 v1, float num)
         {
             return new Vector2(v1.x / num, v1.y / num);
@@ -111,6 +111,6 @@ namespace _3DDataType
                 this /= this / magnitude;
             else
                 this = Zero;
-        } 
+        }
     }
 }

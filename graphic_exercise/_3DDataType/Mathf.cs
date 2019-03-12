@@ -28,50 +28,48 @@ namespace _3DDataType
 
         public static float Sin(float f)
         {
-            return (float)Math.Sin((double)f);
+            return (float) Math.Sin((double) f);
         }
 
         public static float Cos(float f)
         {
-            return (float)Math.Cos((double)f);
+            return (float) Math.Cos((double) f);
         }
 
         public static float Asin(float f)
         {
-            return (float)Math.Asin((double)f);
+            return (float) Math.Asin((double) f);
         }
 
         public static float Acos(float f)
         {
-            return (float)Math.Acos((double)f);
+            return (float) Math.Acos((double) f);
         }
 
         public static float Sqrt(float f)
         {
-            return (float)Math.Sqrt((double)f);
+            return (float) Math.Sqrt((double) f);
         }
 
-        public static float Clamp(float value,float min,float max)
+        public static float Clamp(float value, float min, float max)
         {
             if (value > max)
                 return max;
-            if (value < min)
-                return min;
-            return value;
+            return value < min ? min : value;
         }
 
-        public static float Max(float a,float b)
+        public static float Max(float a, float b)
         {
             return a > b ? a : b;
         }
 
-        public static float Lerp(float a,float b,float lerp)
+        public static float Lerp(float a, float b, float lerp)
         {
             lerp = Clamp(lerp, 0, 1);
             return a + (b - a) * lerp;
         }
 
-        public static void Lerp(ref Color c, Color c1,Color c2, float t)
+        public static void Lerp(ref Color c, Color c1, Color c2, float t)
         {
             if (t < 0)
             {
@@ -81,6 +79,7 @@ namespace _3DDataType
             {
                 t = 1;
             }
+
             c.R = t * c2.R + (1 - t) * c1.R;
             c.G = t * c2.G + (1 - t) * c1.G;
             c.B = t * c2.B + (1 - t) * c1.B;

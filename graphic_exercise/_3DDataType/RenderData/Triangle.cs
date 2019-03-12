@@ -4,7 +4,7 @@ namespace _3DDataType
 {
     public struct Triangle
     {
-        public Vector3[] Vertex { get;}
+        public Vector3[] Vertex { get; }
 
         public Triangle(Vector3[] vertexs)
         {
@@ -26,6 +26,7 @@ namespace _3DDataType
                 {
                     return Vertex[index];
                 }
+
                 throw new IndexOutOfRangeException();
             }
             set
@@ -34,9 +35,10 @@ namespace _3DDataType
                 {
                     Vertex[index] = value;
                 }
-                throw new IndexOutOfRangeException(); 
+
+                throw new IndexOutOfRangeException();
             }
         }
-        
+
     }
 }

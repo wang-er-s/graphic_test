@@ -28,7 +28,7 @@ namespace _3DDataType
 
         public static float Dot(Vector4 v1, Vector4 v2)
         {
-            return (float) (v1.x *  v2.x + v1.y *  v2.y + v1.z *  v2.z + v1.w * v2.w);
+            return (float) (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w);
         }
 
         public Vector4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f)

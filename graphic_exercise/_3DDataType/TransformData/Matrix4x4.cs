@@ -4,8 +4,12 @@ namespace _3DDataType
 {
     public struct Matrix4x4 : IEquatable<Matrix4x4>
     {
-        public static readonly Matrix4x4 zeroMatrix = new Matrix4x4(new Vector4(0.0f, 0.0f, 0.0f, 0.0f), new Vector4(0.0f, 0.0f, 0.0f, 0.0f), new Vector4(0.0f, 0.0f, 0.0f, 0.0f), new Vector4(0.0f, 0.0f, 0.0f, 0.0f));
-        public static readonly Matrix4x4 identityMatrix = new Matrix4x4(new Vector4(1f, 0.0f, 0.0f, 0.0f), new Vector4(0.0f, 1f, 0.0f, 0.0f), new Vector4(0.0f, 0.0f, 1f, 0.0f), new Vector4(0.0f, 0.0f, 0.0f, 1f));
+        public static readonly Matrix4x4 zeroMatrix = new Matrix4x4(new Vector4(0.0f, 0.0f, 0.0f, 0.0f),
+            new Vector4(0.0f, 0.0f, 0.0f, 0.0f), new Vector4(0.0f, 0.0f, 0.0f, 0.0f),
+            new Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+
+        public static readonly Matrix4x4 identityMatrix = new Matrix4x4(new Vector4(1f, 0.0f, 0.0f, 0.0f),
+            new Vector4(0.0f, 1f, 0.0f, 0.0f), new Vector4(0.0f, 0.0f, 1f, 0.0f), new Vector4(0.0f, 0.0f, 0.0f, 1f));
 
         public float m00;
         public float m10;
@@ -45,9 +49,9 @@ namespace _3DDataType
         }
 
         public Matrix4x4(float a1, float b1, float c1, float d1,
-               float a2, float b2, float c2, float d2,
-               float a3, float b3, float c3, float d3,
-               float a4, float b4, float c4, float d4)
+            float a2, float b2, float c2, float d2,
+            float a3, float b3, float c3, float d3,
+            float a4, float b4, float c4, float d4)
         {
             m00 = a1;
             m01 = b1;
@@ -75,10 +79,11 @@ namespace _3DDataType
             {
                 vecs[i] = new Vector4(arr[i, 0], arr[i, 1], arr[i, 2], arr[i, 3]);
             }
+
             Set(vecs[0], vecs[1], vecs[2], vecs[3]);
         }
 
-      
+
 
         public void Set(Vector4 column0, Vector4 column1, Vector4 column2, Vector4 column3)
         {
@@ -87,14 +92,8 @@ namespace _3DDataType
 
         public float this[int row, int column]
         {
-            get
-            {
-                return this[row + column * 4];
-            }
-            set
-            {
-                this[row + column * 4] = value;
-            }
+            get => this[row + column * 4]; 
+            set => this[row + column * 4] = value;
         }
 
         public float this[int index]
@@ -267,7 +266,7 @@ namespace _3DDataType
             }
         }
 
-        public static Matrix4x4 TRS(Vector3 pos,Vector3 eulerAngles,Vector3 scale)
+        public static Matrix4x4 TRS(Vector3 pos, Vector3 eulerAngles, Vector3 scale)
         {
             Matrix4x4 mat = Translate(pos);
             mat = mat * Rotate(eulerAngles) * Scale(scale);
@@ -304,7 +303,7 @@ namespace _3DDataType
         public static Matrix4x4 RotateX(float rad)
         {
             float sin = Mathf.Sin(rad);
-            float cos = (float)Math.Cos(rad);
+            float cos = (float) Math.Cos(rad);
             Matrix4x4 mat = identityMatrix;
             mat[1, 1] = cos;
             mat[1, 2] = -sin;
@@ -316,7 +315,7 @@ namespace _3DDataType
         public static Matrix4x4 RotateY(float rad)
         {
             float sin = Mathf.Sin(rad);
-            float cos = (float)Math.Cos(rad);
+            float cos = (float) Math.Cos(rad);
             Matrix4x4 mat = identityMatrix;
             mat[2, 2] = cos;
             mat[2, 0] = -sin;
@@ -329,8 +328,8 @@ namespace _3DDataType
 
         public static Matrix4x4 RotateZ(float rad)
         {
-            float sin = (float)Math.Sin(rad);
-            float cos = (float)Math.Cos(rad);
+            float sin = (float) Math.Sin(rad);
+            float cos = (float) Math.Cos(rad);
             Matrix4x4 mat = identityMatrix;
             mat[0, 0] = cos;
             mat[0, 1] = -sin;
@@ -350,54 +349,54 @@ namespace _3DDataType
 
         public static Matrix4x4 operator *(Matrix4x4 m1, Matrix4x4 m2)
         {
-            Matrix4x4 matrix4x4 = identityMatrix;
+            Matrix4x4 matrix4X4 = identityMatrix;
 
-            matrix4x4.m00 = (float)(m1.m00 * (double)m2.m00 + m1.m01 * (double)m2.m10 +
-                                     m1.m02 * (double)m2.m20 + m1.m03 * (double)m2.m30);
-            matrix4x4.m01 = (float)(m1.m00 * (double)m2.m01 + m1.m01 * (double)m2.m11 +
-                                     m1.m02 * (double)m2.m21 + m1.m03 * (double)m2.m31);
-            matrix4x4.m02 = (float)(m1.m00 * (double)m2.m02 + m1.m01 * (double)m2.m12 +
-                                     m1.m02 * (double)m2.m22 + m1.m03 * (double)m2.m32);
-            matrix4x4.m03 = (float)(m1.m00 * (double)m2.m03 + m1.m01 * (double)m2.m13 +
-                                     m1.m02 * (double)m2.m23 + m1.m03 * (double)m2.m33);
-            matrix4x4.m10 = (float)(m1.m10 * (double)m2.m00 + m1.m11 * (double)m2.m10 +
-                                     m1.m12 * (double)m2.m20 + m1.m13 * (double)m2.m30);
-            matrix4x4.m11 = (float)(m1.m10 * (double)m2.m01 + m1.m11 * (double)m2.m11 +
-                                     m1.m12 * (double)m2.m21 + m1.m13 * (double)m2.m31);
-            matrix4x4.m12 = (float)(m1.m10 * (double)m2.m02 + m1.m11 * (double)m2.m12 +
-                                     m1.m12 * (double)m2.m22 + m1.m13 * (double)m2.m32);
-            matrix4x4.m13 = (float)(m1.m10 * (double)m2.m03 + m1.m11 * (double)m2.m13 +
-                                     m1.m12 * (double)m2.m23 + m1.m13 * (double)m2.m33);
-            matrix4x4.m20 = (float)(m1.m20 * (double)m2.m00 + m1.m21 * (double)m2.m10 +
-                                     m1.m22 * (double)m2.m20 + m1.m23 * (double)m2.m30);
-            matrix4x4.m21 = (float)(m1.m20 * (double)m2.m01 + m1.m21 * (double)m2.m11 +
-                                     m1.m22 * (double)m2.m21 + m1.m23 * (double)m2.m31);
-            matrix4x4.m22 = (float)(m1.m20 * (double)m2.m02 + m1.m21 * (double)m2.m12 +
-                                     m1.m22 * (double)m2.m22 + m1.m23 * (double)m2.m32);
-            matrix4x4.m23 = (float)(m1.m20 * (double)m2.m03 + m1.m21 * (double)m2.m13 +
-                                     m1.m22 * (double)m2.m23 + m1.m23 * (double)m2.m33);
-            matrix4x4.m30 = (float)(m1.m30 * (double)m2.m00 + m1.m31 * (double)m2.m10 +
-                                     m1.m32 * (double)m2.m20 + m1.m33 * (double)m2.m30);
-            matrix4x4.m31 = (float)(m1.m30 * (double)m2.m01 + m1.m31 * (double)m2.m11 +
-                                     m1.m32 * (double)m2.m21 + m1.m33 * (double)m2.m31);
-            matrix4x4.m32 = (float)(m1.m30 * (double)m2.m02 + m1.m31 * (double)m2.m12 +
-                                     m1.m32 * (double)m2.m22 + m1.m33 * (double)m2.m32);
-            matrix4x4.m33 = (float)(m1.m30 * (double)m2.m03 + m1.m31 * (double)m2.m13 +
-                                     m1.m32 * (double)m2.m23 + m1.m33 * (double)m2.m33);
-            return matrix4x4;
+            matrix4X4.m00 = (float) (m1.m00 * (double) m2.m00 + m1.m01 * (double) m2.m10 +
+                                     m1.m02 * (double) m2.m20 + m1.m03 * (double) m2.m30);
+            matrix4X4.m01 = (float) (m1.m00 * (double) m2.m01 + m1.m01 * (double) m2.m11 +
+                                     m1.m02 * (double) m2.m21 + m1.m03 * (double) m2.m31);
+            matrix4X4.m02 = (float) (m1.m00 * (double) m2.m02 + m1.m01 * (double) m2.m12 +
+                                     m1.m02 * (double) m2.m22 + m1.m03 * (double) m2.m32);
+            matrix4X4.m03 = (float) (m1.m00 * (double) m2.m03 + m1.m01 * (double) m2.m13 +
+                                     m1.m02 * (double) m2.m23 + m1.m03 * (double) m2.m33);
+            matrix4X4.m10 = (float) (m1.m10 * (double) m2.m00 + m1.m11 * (double) m2.m10 +
+                                     m1.m12 * (double) m2.m20 + m1.m13 * (double) m2.m30);
+            matrix4X4.m11 = (float) (m1.m10 * (double) m2.m01 + m1.m11 * (double) m2.m11 +
+                                     m1.m12 * (double) m2.m21 + m1.m13 * (double) m2.m31);
+            matrix4X4.m12 = (float) (m1.m10 * (double) m2.m02 + m1.m11 * (double) m2.m12 +
+                                     m1.m12 * (double) m2.m22 + m1.m13 * (double) m2.m32);
+            matrix4X4.m13 = (float) (m1.m10 * (double) m2.m03 + m1.m11 * (double) m2.m13 +
+                                     m1.m12 * (double) m2.m23 + m1.m13 * (double) m2.m33);
+            matrix4X4.m20 = (float) (m1.m20 * (double) m2.m00 + m1.m21 * (double) m2.m10 +
+                                     m1.m22 * (double) m2.m20 + m1.m23 * (double) m2.m30);
+            matrix4X4.m21 = (float) (m1.m20 * (double) m2.m01 + m1.m21 * (double) m2.m11 +
+                                     m1.m22 * (double) m2.m21 + m1.m23 * (double) m2.m31);
+            matrix4X4.m22 = (float) (m1.m20 * (double) m2.m02 + m1.m21 * (double) m2.m12 +
+                                     m1.m22 * (double) m2.m22 + m1.m23 * (double) m2.m32);
+            matrix4X4.m23 = (float) (m1.m20 * (double) m2.m03 + m1.m21 * (double) m2.m13 +
+                                     m1.m22 * (double) m2.m23 + m1.m23 * (double) m2.m33);
+            matrix4X4.m30 = (float) (m1.m30 * (double) m2.m00 + m1.m31 * (double) m2.m10 +
+                                     m1.m32 * (double) m2.m20 + m1.m33 * (double) m2.m30);
+            matrix4X4.m31 = (float) (m1.m30 * (double) m2.m01 + m1.m31 * (double) m2.m11 +
+                                     m1.m32 * (double) m2.m21 + m1.m33 * (double) m2.m31);
+            matrix4X4.m32 = (float) (m1.m30 * (double) m2.m02 + m1.m31 * (double) m2.m12 +
+                                     m1.m32 * (double) m2.m22 + m1.m33 * (double) m2.m32);
+            matrix4X4.m33 = (float) (m1.m30 * (double) m2.m03 + m1.m31 * (double) m2.m13 +
+                                     m1.m32 * (double) m2.m23 + m1.m33 * (double) m2.m33);
+            return matrix4X4;
         }
 
         public static Vector4 operator *(Matrix4x4 m1, Vector4 vector)
         {
             Vector4 vector4;
-            vector4.x = (float)(m1.m00 * (double)vector.x + m1.m01 * (double)vector.y +
-                                 m1.m02 * (double)vector.z + m1.m03 * (double)vector.w);
-            vector4.y = (float)(m1.m10 * (double)vector.x + m1.m11 * (double)vector.y +
-                                 m1.m12 * (double)vector.z + m1.m13 * (double)vector.w);
-            vector4.z = (float)(m1.m20 * (double)vector.x + m1.m21 * (double)vector.y +
-                                 m1.m22 * (double)vector.z + m1.m23 * (double)vector.w);
-            vector4.w = (float)(m1.m30 * (double)vector.x + m1.m31 * (double)vector.y +
-                                 m1.m32 * (double)vector.z + m1.m33 * (double)vector.w);
+            vector4.x = (float) (m1.m00 * (double) vector.x + m1.m01 * (double) vector.y +
+                                 m1.m02 * (double) vector.z + m1.m03 * (double) vector.w);
+            vector4.y = (float) (m1.m10 * (double) vector.x + m1.m11 * (double) vector.y +
+                                 m1.m12 * (double) vector.z + m1.m13 * (double) vector.w);
+            vector4.z = (float) (m1.m20 * (double) vector.x + m1.m21 * (double) vector.y +
+                                 m1.m22 * (double) vector.z + m1.m23 * (double) vector.w);
+            vector4.w = (float) (m1.m30 * (double) vector.x + m1.m31 * (double) vector.y +
+                                 m1.m32 * (double) vector.z + m1.m33 * (double) vector.w);
             return vector4;
         }
 
@@ -441,6 +440,7 @@ namespace _3DDataType
                     }
                 }
             }
+
             return arr;
         }
 
@@ -454,6 +454,7 @@ namespace _3DDataType
                     result[i, j] = this[i, j];
                 }
             }
+
             return result;
         }
 
@@ -488,6 +489,7 @@ namespace _3DDataType
                     arr[j, i] = temp;
                 }
             }
+
             return arr;
         }
 
@@ -502,7 +504,7 @@ namespace _3DDataType
             float num = 0;
             for (int i = 0; i < arr.GetLength(1); i++)
             {
-                num += GetSubArrDeterminant(arr, 0, i) * (float)Math.Pow(-1, i);
+                num += GetSubArrDeterminant(arr, 0, i) * (float) Math.Pow(-1, i);
             }
 
             return num;
@@ -556,9 +558,10 @@ namespace _3DDataType
                 for (int j = 0; j < arr.GetLength(1); j++)
                 {
                     float[,] temp = GetSubArr(arr, i, j);
-                    result[i, j] = (float)Math.Pow(-1, i + j) * GetDeterminant(temp);
+                    result[i, j] = (float) Math.Pow(-1, i + j) * GetDeterminant(temp);
                 }
             }
+
             return result;
         }
 

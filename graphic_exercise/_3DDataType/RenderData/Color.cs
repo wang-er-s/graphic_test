@@ -7,7 +7,7 @@ namespace _3DDataType.RenderData
     struct Color : IEquatable<Color>
     {
 
-        public Color (float r,float g,float b)
+        public Color(float r, float g, float b)
         {
             this.r = Mathf.Clamp(r, 0, 1);
             this.g = Mathf.Clamp(g, 0, 1);
@@ -20,30 +20,30 @@ namespace _3DDataType.RenderData
 
         public float R
         {
-            get { return r; }
-            set { r = Mathf.Clamp(value, 0, 1); }
+            get => r;
+            set => r = Mathf.Clamp(value, 0, 1);
         }
 
         public float G
         {
-            get { return g; }
-            set { r = Mathf.Clamp(value, 0, 1); }
+            get => g;
+            set => r = Mathf.Clamp(value, 0, 1);
         }
 
         public float B
         {
-            get { return b; }
-            set { r = Mathf.Clamp(value, 0, 1); }
+            get => b;
+            set => r = Mathf.Clamp(value, 0, 1);
         }
 
         public Color(System.Drawing.Color c)
         {
-            r = Mathf.Clamp((float)c.R / 255, 0, 1);
-            g = Mathf.Clamp((float)c.G / 255, 0, 1);
-            b = Mathf.Clamp((float)c.B / 255, 0, 1);
+            r = Mathf.Clamp((float) c.R / 255, 0, 1);
+            g = Mathf.Clamp((float) c.G / 255, 0, 1);
+            b = Mathf.Clamp((float) c.B / 255, 0, 1);
         }
 
-        public static Color operator*(Color c1, Color c2)
+        public static Color operator *(Color c1, Color c2)
         {
             Color c = new Color
             {
@@ -67,11 +67,7 @@ namespace _3DDataType.RenderData
 
         public static Color operator +(Color a, Color b)
         {
-            Color c = new Color();
-            c.r = a.r + b.r;
-            c.g = a.g + b.g;
-            c.b = a.b + b.b;
-            return c;
+            return new Color {r = a.r + b.r, g = a.g + b.g, b = a.b + b.b};
         }
 
         public static bool operator ==(Color a, Color b)
@@ -89,7 +85,7 @@ namespace _3DDataType.RenderData
             float r = Mathf.Clamp(this.r * 255, 0, 255);
             float g = Mathf.Clamp(this.g * 255, 0, 255);
             float b = Mathf.Clamp(this.b * 255, 0, 255);
-            return System.Drawing.Color.FromArgb((int)r, (int)g, (int)b);
+            return System.Drawing.Color.FromArgb((int) r, (int) g, (int) b);
         }
 
         public bool Equals(Color other)

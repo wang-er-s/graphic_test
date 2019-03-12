@@ -37,25 +37,24 @@ namespace _3DDataType.RenderData
             this.point = point;
             this.point.w = 1;
             this.normal = normal;
-            pointColor = new Color(r,g,b);
-            onePerZ = 1;
             this.u = u;
             this.v = v;
-            lightingColor = new Color(r,g,b);
-            depth = 1;
-        }
-
-        public Vertex(Vertex v)
-        {
-            point = v.point;
-            normal = v.normal;
-            this.pointColor = v.pointColor;
+            pointColor = new Color(r, g, b);
             onePerZ = 1;
-            this.u = v.u;
-            this.v = v.v;
-            this.lightingColor = v.lightingColor;
+            lightingColor = new Color(r, g, b);
             depth = 1;
         }
 
+        public Vertex(Vertex vertex)
+        {
+            point = vertex.point;
+            normal = vertex.normal;
+            pointColor = vertex.pointColor;
+            onePerZ = 1;
+            u = vertex.u;
+            v = vertex.v;
+            lightingColor = vertex.lightingColor;
+            depth = 1;
+        }
     }
 }
