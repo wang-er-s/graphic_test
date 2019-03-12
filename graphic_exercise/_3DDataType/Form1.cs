@@ -60,12 +60,13 @@ namespace _3DDataType
             //定义相机
             camera = new Camera(new Vector4(0, 3.5f, 5, 1), new Vector4(0, 1, 0), new Vector4(0, 1, 30, 1),
                 (float) System.Math.PI / 3, this.width / (float) this.height, 3, 30);
-
             System.Timers.Timer mainTimer = new System.Timers.Timer(1000 / 60f);
 
             MouseDown += OnMouseDown;
             MouseUp += OnMouseUp;
             MouseMove += OnMouseMove;
+
+            panel1.MouseEnter += OnMouseDown;
 
             mainTimer.Elapsed += new ElapsedEventHandler(Tick);
             mainTimer.AutoReset = true;
@@ -76,10 +77,11 @@ namespace _3DDataType
 
         private int startXPos = 0;
 
-        public void OnMouseDown(object sender, MouseEventArgs e)
+        private void OnMouseDown(object sender, EventArgs e)
         {
             canMove = true;
-            startXPos = e.X;
+            startXPos = e.
+                ;
             Console.WriteLine("e.x = " + e.X);
         }
 
@@ -98,7 +100,7 @@ namespace _3DDataType
         /// <summary>
         /// 保存纹理颜色值
         /// </summary>
-        public void InitTexture()
+        private void InitTexture()
         {
             textureArray = new System.Drawing.Color[imgWidth, imgHeight];
             for (int i = 0; i < imgWidth; i++)
@@ -234,7 +236,7 @@ namespace _3DDataType
                 v.point.y *= v.onePerZ;
                 v.point.z *= v.onePerZ;
                 v.point.w = 1;
-                //TODO 保存顶点的深度值  ？？
+                //根据Z值的大小来计算深度值
                 v.depth = (v.point.z + 1) / 2;
                 //cvv到屏幕坐标
                 v.point.x = (v.point.x + 1) * 0.5f * width;
@@ -280,7 +282,7 @@ namespace _3DDataType
         /// <summary>
         /// 光栅化三角形，根据传入的顶点区分调用
         /// </summary>
-        void TriangleRasterization(Vertex v1, Vertex v2, Vertex v3)
+        private void TriangleRasterization(Vertex v1, Vertex v2, Vertex v3)
         {
             if (v1.point.y == v2.point.y)
             {
@@ -371,7 +373,7 @@ namespace _3DDataType
         /// <summary>
         /// V1的上顶点，V2V3是下平行边   v2v3点顺序为无所谓
         /// </summary>
-        void FillBottomFlatTriangle(Vertex v1, Vertex v2, Vertex v3)
+        private void FillBottomFlatTriangle(Vertex v1, Vertex v2, Vertex v3)
         {
             //因为设置像素点不能为float，所以需要下面的都是使用int
             int x1 = (int) (Math.Ceiling(v1.point.x));
@@ -416,7 +418,7 @@ namespace _3DDataType
         /// <summary>
         /// V1的下顶点，V2V3是上平行边   
         /// </summary>
-        void FillTopFlatTriangle(Vertex v1, Vertex v2, Vertex v3)
+        private void FillTopFlatTriangle(Vertex v1, Vertex v2, Vertex v3)
         {
             int x1 = (int) (Math.Ceiling(v1.point.x));
             int x2 = (int) (Math.Ceiling(v2.point.x));
@@ -458,7 +460,7 @@ namespace _3DDataType
         /// <summary>
         /// v1是上面的点，v3是下面的点，v2是中间的点
         /// </summary>
-        void FillTriangle(Vertex v1, Vertex v2, Vertex v3)
+        private void FillTriangle(Vertex v1, Vertex v2, Vertex v3)
         {
             if (v2.point.y == v3.point.y)
             {
@@ -483,11 +485,7 @@ namespace _3DDataType
             }
         }
 
-        /// <summary>
-        /// 111
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+
         private void ScanLine(Vertex left, Vertex right)
         {
             //aa
@@ -500,7 +498,7 @@ namespace _3DDataType
             //插值因子
             float t = 0;
             //该点像素的深度值
-            float death = 0;
+            float depth = 0;
             //uv坐标
             int u = 0;
             int v = 0;
@@ -517,15 +515,15 @@ namespace _3DDataType
                 if (xIndex >= 0 && xIndex < width)
                 {
                     //计算该片元的深度值
-                    death = Mathf.Lerp(left.depth, right.depth, t);
-                    if (zBuff[xIndex, (int) left.point.y] > death)
+                    depth = Mathf.Lerp(left.depth, right.depth, t);
+                    if (zBuff[xIndex, (int) left.point.y] > depth)
                     {
-                        //w缓冲
+                        //1/z的线性对应
                         w = Mathf.Lerp(left.onePerZ, right.onePerZ, t);
                         if (Math.Abs(w) > 0.0001f) w = 1 / w;
                         //深度值
-                        zBuff[xIndex, leftY] = death;
-                        //uv坐标
+                        zBuff[xIndex, leftY] = depth;
+                        //uv坐标，乘以图片的宽高来对应图片的像素点
                         u = (int) (Mathf.Lerp(left.u, right.u, t) * w * (imgWidth - 1));
                         v = (int) (Mathf.Lerp(left.v, right.v, t) * w * (imgHeight - 1));
                         //最终颜色
@@ -821,14 +819,14 @@ namespace _3DDataType
         }
 
 
-        void Swap<T>(ref T i1, ref T i2)
+        private void Swap<T>(ref T i1, ref T i2)
         {
             T temp = i1;
             i1 = i2;
             i2 = temp;
         }
 
-        void DDALine(int xa, int ya, int xb, int yb)
+        private void DDALine(int xa, int ya, int xb, int yb)
         {
             float delta_x, delta_y, x, y;
             int dx, dy, steps;

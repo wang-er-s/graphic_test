@@ -28,7 +28,7 @@ namespace _3DDataType.RenderData
         public Color lightingColor;
 
         /// <summary>
-        /// 1/z，用于顶点信息的透视校正
+        /// 1/z，用于顶点信息的透视校正，cvv裁切后，各种信息与1/z成线性关系
         /// </summary>
         public float onePerZ;
 

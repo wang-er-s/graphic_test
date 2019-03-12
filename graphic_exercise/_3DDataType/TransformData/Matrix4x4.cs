@@ -11,22 +11,22 @@ namespace _3DDataType
         public static readonly Matrix4x4 identityMatrix = new Matrix4x4(new Vector4(1f, 0.0f, 0.0f, 0.0f),
             new Vector4(0.0f, 1f, 0.0f, 0.0f), new Vector4(0.0f, 0.0f, 1f, 0.0f), new Vector4(0.0f, 0.0f, 0.0f, 1f));
 
-        public float m00;
-        public float m10;
-        public float m20;
-        public float m30;
-        public float m01;
-        public float m11;
-        public float m21;
-        public float m31;
-        public float m02;
-        public float m12;
-        public float m22;
-        public float m32;
-        public float m03;
-        public float m13;
-        public float m23;
-        public float m33;
+        private float m00;
+        private float m10;
+        private float m20;
+        private float m30;
+        private float m01;
+        private float m11;
+        private float m21;
+        private float m31;
+        private float m02;
+        private float m12;
+        private float m22;
+        private float m32;
+        private float m03;
+        private float m13;
+        private float m23;
+        private float m33;
 
         public Matrix4x4(Vector4 column0, Vector4 column1, Vector4 column2, Vector4 column3)
         {
@@ -324,7 +324,7 @@ namespace _3DDataType
 
             return mat;
         }
-
+  
 
         public static Matrix4x4 RotateZ(float rad)
         {
@@ -458,7 +458,7 @@ namespace _3DDataType
             return result;
         }
 
-        public float GetDeterminant()
+        private float GetDeterminant()
         {
             float[,] arr = GetArr();
             return GetDeterminant(arr);

@@ -30,6 +30,7 @@
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.RenderBtn = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,9 +54,17 @@
             this.RenderBtn.UseVisualStyleBackColor = true;
             this.RenderBtn.Click += new System.EventHandler(this.RenderBtn_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(130, 12);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(860, 599);
+            this.panel1.TabIndex = 2;
+            // 
             // RenderDemo
             // 
             this.ClientSize = new System.Drawing.Size(1002, 623);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.RenderBtn);
             this.Controls.Add(this.pictureBox1);
             this.Name = "RenderDemo";
@@ -71,5 +80,6 @@
 
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button RenderBtn;
+        private System.Windows.Forms.Panel panel1;
     }
 }
