@@ -18,6 +18,7 @@ namespace _3DDataType
             //    Console.WriteLine(i +"   "+ Math.Cos(i));
             //}
             //Console.ReadKey();
+            //ss
         }
     }
 }

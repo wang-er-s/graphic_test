@@ -482,6 +482,7 @@ namespace _3DDataType
         /// <param name="right"></param>
         private void ScanLine(Vertex left, Vertex right)
         {
+            //aa
             int x = (int)Math.Ceiling(left.point.x);
             int dx = (int)Math.Ceiling(right.point.x) - x;
             int stepx = 1;
