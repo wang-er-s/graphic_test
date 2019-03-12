@@ -270,18 +270,19 @@ namespace _3DDataType
 
         #region 三角形光栅化算法
 
+        /// <summary>
+        /// 光栅化三角形，根据传入的顶点区分调用
+        /// </summary>
         void TriangleRasterization(Vertex v1, Vertex v2, Vertex v3)
         {
             if (v1.point.y == v2.point.y)
             {
                 if (v1.point.y < v3.point.y)
                 {
-                    //平顶
                     FillTopFlatTriangle(v3, v2, v1);
                 }
                 else
                 {
-                    //平底
                     FillBottomFlatTriangle(v3, v2, v1);
                 }
             }
@@ -289,23 +290,21 @@ namespace _3DDataType
             {
                 if (v1.point.y < v2.point.y)
                 {
-                    //平顶
                     FillTopFlatTriangle(v2, v1, v3);
                 }
                 else
                 {
-                    //平底
                     FillBottomFlatTriangle(v2, v1, v3);
                 }
             }
             else if (v2.point.y == v3.point.y)
             {
                 if (v2.point.y < v1.point.y)
-                {//平顶
+                {
                     FillTopFlatTriangle(v1, v3, v2);
                 }
                 else
-                {//平底
+                {
                     FillBottomFlatTriangle(v1, v2, v3);
                 }
             }
@@ -359,6 +358,53 @@ namespace _3DDataType
             }
         }
 
+
+
+        /// <summary>
+        /// V1的上顶点，V2V3是下平行边   v2v3点顺序为无所谓
+        /// </summary>
+        void FillBottomFlatTriangle(Vertex v1, Vertex v2, Vertex v3)
+        {
+            //因为设置像素点不能为float，所以需要下面的都是使用int
+            int x1 = (int)(Math.Ceiling(v1.point.x));
+            int x2 = (int)(Math.Ceiling(v2.point.x));
+            int x3 = (int)(Math.Ceiling(v3.point.x));
+            int y1 = (int)(Math.Ceiling(v1.point.y));
+            int y2 = (int)(Math.Ceiling(v2.point.y));
+            int y3 = (int)(Math.Ceiling(v3.point.y));
+            float invslopeL = (x2 - x1) * 1.0f / (y2 - y1);
+            float invslopeR = (x3 - x1) *1.0f / (y3 - y1);
+            int curxL = 0;
+            int curxR = 0;
+
+            for (int scanlineY = y1; scanlineY < v2.point.y; scanlineY++)
+            {
+                curxL = (int)Math.Ceiling((scanlineY - y1) * invslopeL + x1);
+                curxR = (int)Math.Ceiling((scanlineY - y1) * invslopeR + x1);
+                Vertex vl = new Vertex
+                {
+                    point = new Vector4(curxL, scanlineY, 0, 0)
+                };
+                Vertex vr = new Vertex
+                {
+                    point = new Vector4(curxR, scanlineY, 0, 0)
+                };
+                //插值求uv 颜色
+                float t = (scanlineY - y1) / (v2.point.y - y1);
+                Mathf.Lerp(ref vl, v1, v2, t);
+                Mathf.Lerp(ref vr, v1, v3, t);
+                if (vl.point.x < vr.point.x)
+                {
+                    ScanLine(vl, vr);
+                }
+                else
+                {
+                    ScanLine(vr, vl);
+                }
+                
+            }
+        }
+
         /// <summary>
         /// V1的下顶点，V2V3是上平行边   
         /// </summary>
@@ -379,12 +425,14 @@ namespace _3DDataType
             {
                 curxL = (int)Math.Ceiling(x1 + (y1 - scanlineY) * invslopeL);
                 curxR = (int)Math.Ceiling(x1 + (y1 - scanlineY) * invslopeR);
-                Vertex vl = new Vertex();
-                vl.point.x = curxL;
-                vl.point.y = scanlineY;
-                Vertex vr = new Vertex();
-                vr.point.x = curxR;
-                vr.point.y = scanlineY;
+                Vertex vl = new Vertex
+                {
+                    point = new Vector4(curxL, scanlineY, 0, 0)
+                };
+                Vertex vr = new Vertex
+                {
+                    point = new Vector4(curxR, scanlineY, 0, 0)
+                };
                 float t = (y1 - scanlineY) * 1.0f / (y1 - y3);
                 Mathf.Lerp(ref vl, v1, v3, t);
                 Mathf.Lerp(ref vr, v1, v2, t);
@@ -396,48 +444,6 @@ namespace _3DDataType
                 {
                     ScanLine(vl, vr);
                 }
-            }
-        }
-
-        /// <summary>
-        /// V1的上顶点，V2V3是下平行边   v2v3点顺序为无所谓
-        /// </summary>
-        void FillBottomFlatTriangle(Vertex v1, Vertex v2, Vertex v3)
-        {
-            int x1 = (int)(Math.Ceiling(v1.point.x));
-            int x2 = (int)(Math.Ceiling(v2.point.x));
-            int x3 = (int)(Math.Ceiling(v3.point.x));
-            int y1 = (int)(Math.Ceiling(v1.point.y));
-            int y2 = (int)(Math.Ceiling(v2.point.y));
-            int y3 = (int)(Math.Ceiling(v3.point.y));
-            float invslopeL = (x2 - x1) * 1.0f / (y2 - y1);
-            float invslopeR = (x3 - x1) *1.0f / (y3 - y1);
-            int curxL = 0;
-            int curxR = 0;
-
-            for (int scanlineY = y1; scanlineY < v2.point.y; scanlineY++)
-            {
-                curxL = (int)Math.Ceiling((scanlineY - y1) * invslopeL + x1);
-                curxR = (int)Math.Ceiling((scanlineY - y1) * invslopeR + x1);
-                Vertex vl = new Vertex();
-                vl.point.x = curxL;
-                v1.point.y = scanlineY;
-                float t = (scanlineY - y1) / (v2.point.y - y1);
-                Mathf.Lerp(ref vl, v1, v2, t);
-                Vertex vr = new Vertex();
-                vr.point.x = curxR;
-                vr.point.y = scanlineY;
-                Mathf.Lerp(ref vr, v1, v3, t);
-                //Console.WriteLine("mememme " + vl.point + "  " + vr.point +"  " + t);
-                if (vl.point.x < vr.point.x)
-                {
-                    ScanLine(vl, vr);
-                }
-                else
-                {
-                    ScanLine(vr, vl);
-                }
-                
             }
         }
 
@@ -456,7 +462,7 @@ namespace _3DDataType
                 FillTopFlatTriangle(v3, v2, v1);
             }
             else
-            {
+             {
                 float v4x = (v2.point.y - v1.point.y) * (v3.point.x - v1.point.x) / (v3.point.y - v1.point.y) + v1.point.x;
                 float t = (v2.point.y - v1.point.y) / (v3.point.y - v1.point.y);
                 Vector2 v4Point = new Vector2(v4x, v2.point.y);
@@ -464,20 +470,16 @@ namespace _3DDataType
                 v4.point = v4Point;
                 //插值计算uv 颜色等
                 Mathf.Lerp(ref v4, v1, v3, t);
-                //逆序排列
-                if (v4x > v2.point.x)
-                {
-                    FillBottomFlatTriangle(v1, v4, v2);
-                    FillTopFlatTriangle(v3, v4, v2);
-                }
-                else
-                {
-                    FillBottomFlatTriangle(v1, v2, v4);
-                    FillTopFlatTriangle(v3, v2, v4);
-                }
+                FillBottomFlatTriangle(v1, v2, v4);
+                FillTopFlatTriangle(v3, v2, v4);
             }
         }
 
+        /// <summary>
+        /// 111
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
         private void ScanLine(Vertex left, Vertex right)
         {
             int x = (int)Math.Ceiling(left.point.x);
@@ -559,6 +561,9 @@ namespace _3DDataType
         #endregion
 
         #region 2DLine 算法
+        /// <summary>
+        /// 画线 不带颜色
+        /// </summary>
         private void BresenhamDrawLine(Vertex v1, Vertex v2)
         {
             int startX = (int)(Math.Round(v1.point.x, MidpointRounding.AwayFromZero));
@@ -621,7 +626,9 @@ namespace _3DDataType
             }
         }
 
-
+        /// <summary>
+        /// 带颜色的画线
+        /// </summary>
         private void BresenhamDrawLine2(Vertex p1, Vertex p2)
         {
             int x = (int)(System.Math.Round(p1.point.x, MidpointRounding.AwayFromZero));

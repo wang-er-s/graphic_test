@@ -7,7 +7,10 @@
       <e p="_3DDataType" t="IncludeRecursive">
         <e p="_3DDataType.csproj" t="IncludeRecursive" />
         <e p="bin" t="ExcludeRecursive" />
-        <e p="Camera.cs" t="Include" />
+        <e p="Enum.cs" t="Include" />
+        <e p="Form1.cs" t="Include" />
+        <e p="Form1.Designer.cs" t="Include" />
+        <e p="Form1.resx" t="Include" />
         <e p="Mathf.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -22,13 +25,20 @@
           <e p="Color.cs" t="Include" />
           <e p="Light.cs" t="Include" />
           <e p="Material.cs" t="Include" />
+          <e p="Mesh.cs" t="Include" />
           <e p="Tools.cs" t="Include" />
           <e p="Triangle.cs" t="Include" />
           <e p="Vertex.cs" t="Include" />
         </e>
+        <e p="Test" t="Include">
+          <e p="CubeTestData.cs" t="Include" />
+          <e p="QuadTestData.cs" t="Include" />
+        </e>
+        <e p="Texture" t="Include">
+          <e p="texture.jpg" t="Include" />
+        </e>
         <e p="TransformData" t="Include">
           <e p="Matrix4x4.cs" t="Include" />
-          <e p="Transform.cs" t="Include" />
           <e p="Vector2.cs" t="Include" />
           <e p="Vector3.cs" t="Include" />
           <e p="Vector4.cs" t="Include" />
