@@ -24,20 +24,4 @@ namespace _3DDataType
         /// </summary>
         VertexColor
     }
-
-    /// <summary>
-    /// 光照模式
-    /// </summary>
-    public enum LightMode
-    {
-        ON,
-        OFF
-    }
-
-    public enum TextColor
-    {
-        ON,
-        OFF
-    }
-
 }

@@ -47,8 +47,8 @@ namespace _3DDataType.Test
         };
 
         //材质
-        public static Material Mat = new Material(new Color(0, 0, 0.1f), 0.1f, new Color(0.3f, 0.3f, 0.3f),
-            new Color(1, 1, 1), 99);
+        public static Material Mat = new Material(new Color(0.1f, 0.1f, 0.1f), 0.1f, new Color(0.8f, 0.8f, 0.8f),
+            new Color(0.5f, 0.5f, 0.5f), 99);
 
     }
 }

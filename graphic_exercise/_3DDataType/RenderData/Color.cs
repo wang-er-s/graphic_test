@@ -4,7 +4,7 @@ using System.Text;
 
 namespace _3DDataType.RenderData
 {
-    struct Color : IEquatable<Color>
+    public struct Color : IEquatable<Color>
     {
 
         public Color(float r, float g, float b)
@@ -27,13 +27,13 @@ namespace _3DDataType.RenderData
         public float G
         {
             get => g;
-            set => r = Mathf.Clamp(value, 0, 1);
+            set => g = Mathf.Clamp(value, 0, 1);
         }
 
         public float B
         {
             get => b;
-            set => r = Mathf.Clamp(value, 0, 1);
+            set => b = Mathf.Clamp(value, 0, 1);
         }
 
         public Color(System.Drawing.Color c)
@@ -80,12 +80,19 @@ namespace _3DDataType.RenderData
             return !(a == b);
         }
 
-        public System.Drawing.Color TransFormToSystemColor()
+        public System.Drawing.Color TransToSystemColor()
         {
             float r = Mathf.Clamp(this.r * 255, 0, 255);
             float g = Mathf.Clamp(this.g * 255, 0, 255);
             float b = Mathf.Clamp(this.b * 255, 0, 255);
             return System.Drawing.Color.FromArgb((int) r, (int) g, (int) b);
+        }
+
+        public void Reset()
+        {
+            r = 1;
+            g = 1;
+            b = 1;
         }
 
         public bool Equals(Color other)
@@ -108,6 +115,11 @@ namespace _3DDataType.RenderData
                 hashCode = (hashCode * 397) ^ b.GetHashCode();
                 return hashCode;
             }
+        }
+
+        public override string ToString()
+        {
+            return $"R={r} G={g} B={b}";
         }
     }
 }

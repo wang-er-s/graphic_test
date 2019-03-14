@@ -79,7 +79,6 @@ namespace _3DDataType
             {
                 t = 1;
             }
-
             c.R = t * c2.R + (1 - t) * c1.R;
             c.G = t * c2.G + (1 - t) * c1.G;
             c.B = t * c2.B + (1 - t) * c1.B;
@@ -99,12 +98,11 @@ namespace _3DDataType
             //uv插值
             v.u = Lerp(v1.u, v2.u, t);
             v.v = Lerp(v1.v, v2.v, t);
-            //深度值插值
-            v.depth = Lerp(v1.depth, v2.depth, t);
             //光照颜色插值
             Lerp(ref v.lightingColor, v1.lightingColor, v2.lightingColor, t);
             //插值矫正系数
             v.onePerZ = Lerp(v1.onePerZ, v2.onePerZ, t);
+            v.depth = Lerp(v1.depth, v2.depth, t);
         }
     }
 }

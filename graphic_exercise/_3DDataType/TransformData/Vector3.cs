@@ -29,18 +29,18 @@ namespace _3DDataType
         public float y;
         public float z;
 
-        public float magnitude => (float) Math.Sqrt(Dot(this, this));
+        public float magnitude => (float)Math.Sqrt(Dot(this, this));
 
         public static float Dot(Vector3 v1, Vector3 v2)
         {
-            return (float) (v1.x * (double) v2.x + v1.y * (double) v2.y + v1.z * (double) v2.z);
+            return (float)(v1.x * (double)v2.x + v1.y * (double)v2.y + v1.z * (double)v2.z);
         }
 
         public static Vector3 Cross(Vector3 v1, Vector3 r2)
         {
-            return new Vector3((float) (v1.y * (double) r2.z - v1.z * (double) r2.y),
-                (float) (v1.z * (double) r2.x - v1.x * (double) r2.z),
-                (float) (v1.x * (double) r2.y - v1.y * (double) r2.x));
+            return new Vector3((float)(v1.y * (double)r2.z - v1.z * (double)r2.y),
+                (float)(v1.z * (double)r2.x - v1.x * (double)r2.z),
+                (float)(v1.x * (double)r2.y - v1.y * (double)r2.x));
         }
 
         public Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f)
@@ -136,6 +136,11 @@ namespace _3DDataType
             else
                 this = Zero;
             return this;
+        }
+
+        public override string ToString()
+        {
+            return $"x={x} y={y} z={z}";
         }
     }
 }

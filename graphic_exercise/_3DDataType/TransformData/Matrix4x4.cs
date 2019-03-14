@@ -338,6 +338,38 @@ namespace _3DDataType
             return mat;
         }
 
+        /// <summary>
+        /// 绕任意轴旋转
+        /// </summary>
+        /// <param name="axis">轴向量</param>
+        /// <param name="angle">弧度</param>
+        /// <returns></returns>
+        public static Matrix4x4 ArbitraryAxis(Vector4 axis, float angle)
+        {
+            Matrix4x4 a = new Matrix4x4();
+            //第一列
+            a[0, 0] = (float)(axis.x * axis.x * (1 - Math.Cos(angle)) + Math.Cos(angle));
+            a[1, 0] = (float)(axis.x * axis.y * (1 - Math.Cos(angle)) - axis.z * Math.Sin(angle));
+            a[2, 0] = (float)(axis.x * axis.z * (1 - Math.Cos(angle)) + axis.y * Math.Sin(angle));
+            a[3, 0] = 0;
+            //第二列
+            a[0, 1] = (float)(axis.x * axis.y * (1 - Math.Cos(angle)) + axis.z * Math.Sin(angle));
+            a[1, 1] = (float)(axis.y * axis.y * (1 - Math.Cos(angle)) + Math.Cos(angle));
+            a[2, 1] = (float)(axis.y * axis.z * (1 - Math.Cos(angle)) - axis.x * Math.Sin(angle));
+            a[3, 1] = 0;
+            //第三列
+            a[0, 2] = (float)(axis.x * axis.z * (1 - Math.Cos(angle)) - axis.y * Math.Sin(angle));
+            a[1, 2] = (float)(axis.y * axis.z * (1 - Math.Cos(angle)) + axis.x * Math.Sin(angle));
+            a[2, 2] = (float)(axis.z * axis.z * (1 - Math.Cos(angle)) + Math.Cos(angle));
+            a[3, 2] = 0;
+            //第四列
+            a[0, 3] = 0;
+            a[1, 3] = 0;
+            a[2, 3] = 0;
+            a[3, 3] = 1;
+            return a;
+        }
+
         public static Matrix4x4 Scale(Vector3 scale)
         {
             Matrix4x4 mat = identityMatrix;

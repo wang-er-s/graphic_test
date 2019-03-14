@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace _3DDataType.Test
 {
- static class CubeTestData
+static class CubeTestData
  {
   //顶点坐标
   public static Vector4[] PointList =

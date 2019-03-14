@@ -30,17 +30,17 @@
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.RenderBtn = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.TextureBtn = new System.Windows.Forms.Button();
+            this.CullingBtn = new System.Windows.Forms.Button();
+            this.LightBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Location = new System.Drawing.Point(133, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1002, 623);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.Size = new System.Drawing.Size(800, 600);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -54,19 +54,45 @@
             this.RenderBtn.UseVisualStyleBackColor = true;
             this.RenderBtn.Click += new System.EventHandler(this.RenderBtn_Click);
             // 
-            // panel1
+            // TextureBtn
             // 
-            this.panel1.Location = new System.Drawing.Point(130, 12);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(860, 599);
-            this.panel1.TabIndex = 2;
+            this.TextureBtn.Location = new System.Drawing.Point(30, 83);
+            this.TextureBtn.Name = "TextureBtn";
+            this.TextureBtn.Size = new System.Drawing.Size(75, 23);
+            this.TextureBtn.TabIndex = 2;
+            this.TextureBtn.Text = "贴图";
+            this.TextureBtn.UseVisualStyleBackColor = true;
+            this.TextureBtn.Click += new System.EventHandler(this.Texture_Click);
+            // 
+            // CullingBtn
+            // 
+            this.CullingBtn.Location = new System.Drawing.Point(30, 147);
+            this.CullingBtn.Name = "CullingBtn";
+            this.CullingBtn.Size = new System.Drawing.Size(75, 23);
+            this.CullingBtn.TabIndex = 3;
+            this.CullingBtn.Text = "裁剪";
+            this.CullingBtn.UseVisualStyleBackColor = true;
+            this.CullingBtn.Click += new System.EventHandler(this.CullingBtn_Click);
+            // 
+            // LightBtn
+            // 
+            this.LightBtn.Location = new System.Drawing.Point(30, 219);
+            this.LightBtn.Name = "LightBtn";
+            this.LightBtn.Size = new System.Drawing.Size(75, 23);
+            this.LightBtn.TabIndex = 4;
+            this.LightBtn.Text = "灯光";
+            this.LightBtn.UseVisualStyleBackColor = true;
+            this.LightBtn.Click += new System.EventHandler(this.LightBtn_Click);
             // 
             // RenderDemo
             // 
             this.ClientSize = new System.Drawing.Size(1002, 623);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.LightBtn);
+            this.Controls.Add(this.CullingBtn);
+            this.Controls.Add(this.TextureBtn);
             this.Controls.Add(this.RenderBtn);
             this.Controls.Add(this.pictureBox1);
+            this.KeyPreview = true;
             this.Name = "RenderDemo";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Random";
@@ -80,6 +106,8 @@
 
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button RenderBtn;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button TextureBtn;
+        private System.Windows.Forms.Button CullingBtn;
+        private System.Windows.Forms.Button LightBtn;
     }
 }

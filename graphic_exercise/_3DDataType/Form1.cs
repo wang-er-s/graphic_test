@@ -21,20 +21,21 @@ namespace _3DDataType
         private Bitmap texture;
         private Bitmap frameBuff;
         private Graphics frameG;
-        private float[,] zBuff; //z缓冲，用来做深度测试
+        private float[,] zBuff; //z缓冲
         private Mesh mesh;
         private Light light;
         private Camera camera;
         private Color ambientColor; //全局环境光颜色 
         private RenderMode rendMode; //渲染模式
-        private LightMode lightMode; //光照模式
-        private TextColor textColors; //纹理采样
+        private bool isOpenLight; //光照模式
+        private bool isOpenTexture; //纹理采样
         private System.Drawing.Color[,] textureArray; //纹理颜色值
-        private bool canMove = false;
+        private bool isCull = true;
+
         private int imgWidth = 512;
         private int imgHeight = 512;
-        private int width = 800 + 16;
-        private int height = 600 + 40;
+        private int width = 800;
+        private int height = 600;
 
         public RenderDemo()
         {
@@ -47,27 +48,28 @@ namespace _3DDataType
             texture = new Bitmap(img, imgWidth, imgHeight);
             InitTexture();
             rendMode = RenderMode.Textured;
-            lightMode = LightMode.OFF;
-            textColors = TextColor.ON;
+            isOpenLight = true;
+            isOpenTexture = true;
             frameBuff = new Bitmap(width, height);
             frameG = Graphics.FromImage(frameBuff);
-            zBuff = new float[height, width];
-            ambientColor = new RenderData.Color(1f, 1f, 1f);
+            zBuff = new float[width, height];
+            ambientColor = new Color(0.1f, 0.1f, 0.1f);
             mesh = new Mesh(CubeTestData.PointList, CubeTestData.Indexs, CubeTestData.UVs, CubeTestData.VertColors,
                 CubeTestData.Normals, QuadTestData.Mat);
             //定义光照
-            light = new Light(new Vector3(0, 0, -10), new RenderData.Color(1, 1, 1));
+            light = new Light(new Vector3(0, 0, -10), new Color(1, 1, 1));
             //定义相机
-            camera = new Camera(new Vector4(0, 3.5f, 5, 1), new Vector4(0, 1, 0), new Vector4(0, 1, 30, 1),
-                (float) System.Math.PI / 3, this.width / (float) this.height, 3, 30);
-            System.Timers.Timer mainTimer = new System.Timers.Timer(1000 / 60f);
+            camera = new Camera(new Vector4(0, 4, 5, 1), new Vector4(0, 1, 0,0), new Vector4(0, 4, 6, 1),
+                (float) Math.PI /3, width / (float) height, 5, 30);
 
             MouseDown += OnMouseDown;
             MouseUp += OnMouseUp;
             MouseMove += OnMouseMove;
 
-            panel1.MouseEnter += OnMouseDown;
+            KeyPress += OnLeftKeyDown;
+            
 
+            System.Timers.Timer mainTimer = new System.Timers.Timer(1000 / 10f);
             mainTimer.Elapsed += new ElapsedEventHandler(Tick);
             mainTimer.AutoReset = true;
             mainTimer.Enabled = true;
@@ -75,27 +77,97 @@ namespace _3DDataType
 
         }
 
-        private int startXPos = 0;
+        #region 按钮按键和鼠标事件
 
-        private void OnMouseDown(object sender, EventArgs e)
+        private void Texture_Click(object sender, EventArgs e)
         {
-            canMove = true;
-            startXPos = e.
-                ;
+            isOpenTexture = !isOpenTexture;
+        }
+
+        private void CullingBtn_Click(object sender, EventArgs e)
+        {
+            isCull = !isCull;
+        }
+
+        private void LightBtn_Click(object sender, EventArgs e)
+        {
+            isOpenLight = !isOpenLight;
+        }
+
+        private int startXPos = 0;
+        private float startYPos = 0;
+        private bool canRotate = false;
+        private Vector4 tempPos;
+        private void OnMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                canRotate = true;
+            startXPos = e.X;
+            startYPos = e.Y;
             Console.WriteLine("e.x = " + e.X);
         }
-
+         
         private void OnMouseUp(object sender, MouseEventArgs e)
         {
-            canMove = false;
+            canRotate = false;
         }
-
+        float angle = (float)(Math.PI / 90);
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (!canMove) return;
-            Console.WriteLine("y pos ======== " + e.X);
-            rot += (e.X - startXPos) * 0.01f;
+            if (!canRotate) return;
+            //Console.WriteLine($"e.y = {e.Location.Y}  startY = {startYPos}");
+            rotY = e.Y - startYPos;
+            if (rotY < 0)
+                rotY = angle;
+            else if (rotY > 0)
+                rotY = -angle;
+            rotX = e.X - startXPos;
+            if (rotX < 0)
+                rotX = -angle;
+            else if (rotX > 0)
+                rotX = angle;
+            startXPos = e.X;
+            startYPos = e.Y;
+            Vector4 forward = camera.lookAt - camera.eyePosition;
+            forward.Normalize();
+            Vector4 right = Vector4.Cross(camera.up, forward);
+            Vector4 pos = camera.lookAt - camera.eyePosition;
+            pos = Matrix4x4.ArbitraryAxis(right, rotY) * Matrix4x4.RotateY(rotX) * pos;
+            camera.lookAt = pos + camera.eyePosition;
+
         }
+
+        private void OnLeftKeyDown(object sender,KeyPressEventArgs e)
+        {
+            Vector4 forward = camera.lookAt - camera.eyePosition;
+            forward.Normalize();
+            Vector4 right = Vector4.Cross(camera.up, forward);
+            right.Normalize();
+            Vector4 up = Vector4.Cross(forward, right);
+            up.Normalize();
+            if (e.KeyChar == 'a')
+            {
+                camera.eyePosition -= right * 0.1f;
+                camera.lookAt -= right * 0.1f;
+            }
+            if (e.KeyChar == 'd')
+            {
+                camera.eyePosition += right * 0.1f;
+                camera.lookAt += right * 0.1f;
+            }
+            if (e.KeyChar == 'w')
+            {
+                camera.eyePosition += forward* 0.1f;
+                camera.lookAt += forward* 0.1f;
+            }
+            if (e.KeyChar == 's')
+            {
+                camera.eyePosition -= forward * 0.1f;
+            }
+            //camera.lookAt = camera.eyePosition + new Vector4(0, 0, 1, 0);
+            Console.WriteLine(camera.eyePosition);
+        }
+        #endregion
 
         /// <summary>
         /// 保存纹理颜色值
@@ -112,8 +184,8 @@ namespace _3DDataType
             }
         }
 
-        private float rot = 0f;
-
+        private float rotY = 0f;
+        private float rotX = 0f;
         private void Tick(object sender, EventArgs e)
         {
             lock (frameBuff)
@@ -121,12 +193,11 @@ namespace _3DDataType
                 ClearBuff();
 
                 //*Matrix4x4.RotateX(rot)
-                Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 3, 10)) * Matrix4x4.RotateY(rot) *
-                                        Matrix4x4.RotateX(rot) * Matrix4x4.RotateZ(rot);
+                Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 4, 15)) * Matrix4x4.RotateY(0) *
+                                        Matrix4x4.RotateX(-0.3f) * Matrix4x4.RotateZ(0);
                 Matrix4x4 viewMatrix = Camera.BuildViewMatrix(camera.eyePosition, camera.up, camera.lookAt);
                 Matrix4x4 projectionMatrix =
                     Camera.BuildProjectionMatrix(camera.fov, camera.aspect, camera.zn, camera.zf);
-                rot += 0.05f;
                 Draw(worldMatrix, viewMatrix, projectionMatrix);
                 pictureBox1.Image = Image.FromHbitmap(frameBuff.GetHbitmap());
             }
@@ -153,7 +224,12 @@ namespace _3DDataType
         private void DrawTriangle(Vertex p1, Vertex p2, Vertex p3, Matrix4x4 m, Matrix4x4 v, Matrix4x4 p)
         {
             //--------------------几何阶段---------------------------
-            if (lightMode == LightMode.ON)
+
+            SetModelToWorld(m, ref p1);
+            SetModelToWorld(m, ref p2);
+            SetModelToWorld(m, ref p3);
+
+            if (isOpenLight)
             {
                 //进行顶点光照
                 Light.BaseLight(m, light, mesh, camera.eyePosition, ambientColor, ref p1);
@@ -161,10 +237,10 @@ namespace _3DDataType
                 Light.BaseLight(m, light, mesh, camera.eyePosition, ambientColor, ref p3);
             }
 
-            //变换到相机空间
-            SetMVTransform(m, v, ref p1);
-            SetMVTransform(m, v, ref p2);
-            SetMVTransform(m, v, ref p3);
+            //模型空间变到世界空间变换到相机空间
+            SetWorldToCamera(v, ref p1);
+            SetWorldToCamera(v, ref p2);
+            SetWorldToCamera(v, ref p3);
 
             //在相机空间进行背面消隐
             if (Camera.BackFaceCulling(p1, p2, p3) == false)
@@ -177,7 +253,7 @@ namespace _3DDataType
             SetProjectionTransform(p, ref p2);
             SetProjectionTransform(p, ref p3);
 
-            //简单裁剪
+            //简单剔除
             if (Clip(p1) == false && Clip(p2) == false && Clip(p3) == false)
             {
                 return;
@@ -190,12 +266,30 @@ namespace _3DDataType
 
             //--------------------光栅化阶段---------------------------
 
+            if (isCull)
+            {
+                ValueTuple<Triangle, Triangle, int> outValue = new ValueTuple<Triangle, Triangle, int>(
+                    new Triangle(p1, p2, p3),new Triangle(new Vertex(),new Vertex(),new Vertex()) ,1);
+                clip(new Triangle(p1, p2, p3), ref outValue);
+                Rasterization(outValue.Item1[0], outValue.Item1[1], outValue.Item1[2]);
+                if (outValue.Item3 == 2)
+                {
+                    Rasterization(outValue.Item2[0], outValue.Item2[1], outValue.Item2[2]);
+                }
+            }
+            else
+            {
+                Rasterization(p1, p2, p3);
+            }
+        }
+
+        void Rasterization(Vertex p1, Vertex p2, Vertex p3)
+        {
             if (rendMode == RenderMode.Wireframe)
             {
-                //线框模式
-                BresenhamDrawLine2(p1, p2);
-                BresenhamDrawLine2(p2, p3);
-                BresenhamDrawLine2(p3, p1);
+                BresenhamDrawLine(p1, p2);
+                BresenhamDrawLine(p2, p3);
+                BresenhamDrawLine(p3, p1);
             }
             else
             {
@@ -204,12 +298,19 @@ namespace _3DDataType
         }
 
         /// <summary>
-        /// 进行mv矩阵变换，从本地模型空间到世界空间，再到相机空间
+        /// 世界空间到相机空间
         /// </summary>
-        private void SetMVTransform(Matrix4x4 m, Matrix4x4 v, ref Vertex vertex)
+        private void SetWorldToCamera( Matrix4x4 v, ref Vertex vertex)
+        {
+            vertex.point = v * vertex.point;
+        }
+
+        /// <summary>
+        /// 模型空间到世界空间
+        /// </summary>
+        private void SetModelToWorld(Matrix4x4 m, ref Vertex vertex)
         {
             vertex.point = m * vertex.point;
-            vertex.point = v * vertex.point;
         }
 
         /// <summary>
@@ -230,31 +331,30 @@ namespace _3DDataType
             if (v.point.w != 0)
             {
                 //插值矫正系数
-                v.onePerZ = 1 / v.point.w;
+                v.depth = 1 / v.point.w;
                 //先进行透视除法，转到cvv
-                v.point.x *= v.onePerZ;
-                v.point.y *= v.onePerZ;
-                v.point.z *= v.onePerZ;
+                v.point.x *= v.depth;
+                v.point.y *= v.depth;
+                v.point.z *= v.depth;
                 v.point.w = 1;
-                //根据Z值的大小来计算深度值
-                v.depth = (v.point.z + 1) / 2;
+                v.onePerZ = (v.point.z + 1) / 2;
                 //cvv到屏幕坐标
                 v.point.x = (v.point.x + 1) * 0.5f * width;
                 v.point.y = (1 - v.point.y) * 0.5f * height;
-                v.u *= v.onePerZ;
-                v.v *= v.onePerZ;
-                v.pointColor *= v.onePerZ;
-                v.lightingColor *= v.onePerZ;
+                v.u *= v.depth;
+                v.v *= v.depth;
+                v.pointColor *= v.depth;
+                v.lightingColor *= v.depth;
             }
         }
 
         /// <summary>
-        /// 检查是否裁剪这个顶点,简单的cvv裁剪,在透视除法之前
+        /// 检查是否这个顶点是否在视锥体内
         /// </summary>
         /// <returns>是否通过剪裁</returns>
         private bool Clip(Vertex v)
         {
-            //cvv为 x-1,1  y-1,1  z0,1
+            //cvv为 xyz 需要都需要在-1,1内
             if (v.point.x >= -v.point.w && v.point.x <= v.point.w &&
                 v.point.y >= -v.point.w && v.point.y <= v.point.w &&
                 v.point.z >= -v.point.w && v.point.z <= v.point.w)
@@ -267,7 +367,7 @@ namespace _3DDataType
 
         private void ClearBuff()
         {
-            frameG.Clear(System.Drawing.Color.White);
+            frameG.Clear(System.Drawing.Color.AliceBlue);
             for (int i = 0; i < zBuff.GetLength(0); i++)
             {
                 for (int j = 0; j < zBuff.GetLength(1); j++)
@@ -399,19 +499,11 @@ namespace _3DDataType
                 {
                     point = new Vector4(curxR, scanlineY, 0, 0)
                 };
-                //插值求uv 颜色
+                //插值求uv 颜色等
                 float t = (scanlineY - y1) / (v2.point.y - y1);
                 Mathf.Lerp(ref vl, v1, v2, t);
                 Mathf.Lerp(ref vr, v1, v3, t);
-                if (vl.point.x < vr.point.x)
-                {
-                    ScanLine(vl, vr);
-                }
-                else
-                {
-                    ScanLine(vr, vl);
-                }
-
+                BresenhamDrawLine(vl, vr);
             }
         }
 
@@ -446,14 +538,7 @@ namespace _3DDataType
                 float t = (y1 - scanlineY) * 1.0f / (y1 - y3);
                 Mathf.Lerp(ref vl, v1, v3, t);
                 Mathf.Lerp(ref vr, v1, v2, t);
-                if (vl.point.x > vr.point.x)
-                {
-                    ScanLine(vr, vl);
-                }
-                else
-                {
-                    ScanLine(vl, vr);
-                }
+                BresenhamDrawLine(vl, vr);
             }
         }
 
@@ -466,7 +551,6 @@ namespace _3DDataType
             {
                 FillBottomFlatTriangle(v1, v2, v3);
             }
-            /* check for trivial case of top-flat triangle */
             else if (v1.point.y == v2.point.y)
             {
                 FillTopFlatTriangle(v3, v2, v1);
@@ -486,163 +570,18 @@ namespace _3DDataType
         }
 
 
-        private void ScanLine(Vertex left, Vertex right)
-        {
-            //aa
-            int leftX = (int) Math.Ceiling(left.point.x);
-            int dx = (int) Math.Ceiling(right.point.x) - leftX;
-            int leftY = (int) Math.Ceiling(left.point.y);
-            int stepx = 1;
-            //求w缓冲系数
-            float w = 0;
-            //插值因子
-            float t = 0;
-            //该点像素的深度值
-            float depth = 0;
-            //uv坐标
-            int u = 0;
-            int v = 0;
-            int max = dx;
-            if (max == 0)
-            {
-                max = 9999;
-            }
-
-            for (int i = 0; i <= dx; i += 1)
-            {
-                t = i / (float) max;
-                int xIndex = leftX;
-                if (xIndex >= 0 && xIndex < width)
-                {
-                    //计算该片元的深度值
-                    depth = Mathf.Lerp(left.depth, right.depth, t);
-                    if (zBuff[xIndex, (int) left.point.y] > depth)
-                    {
-                        //1/z的线性对应
-                        w = Mathf.Lerp(left.onePerZ, right.onePerZ, t);
-                        if (Math.Abs(w) > 0.0001f) w = 1 / w;
-                        //深度值
-                        zBuff[xIndex, leftY] = depth;
-                        //uv坐标，乘以图片的宽高来对应图片的像素点
-                        u = (int) (Mathf.Lerp(left.u, right.u, t) * w * (imgWidth - 1));
-                        v = (int) (Mathf.Lerp(left.v, right.v, t) * w * (imgHeight - 1));
-                        //最终颜色
-                        Color finalColor = new Color(1, 1, 1);
-                        if (textColors == TextColor.OFF)
-                        {
-                            //光照颜色
-                            if (lightMode == LightMode.ON)
-                            {
-                                Mathf.Lerp(ref finalColor, left.lightingColor, right.lightingColor, t);
-                                finalColor *= w;
-                            }
-
-                            //颜色和光照混合
-                            Color temp = new Color();
-                            Mathf.Lerp(ref temp, left.pointColor, right.pointColor, t);
-                            finalColor = temp * w * finalColor;
-                        }
-                        else
-                        {
-                            //光照颜色
-                            if (lightMode == LightMode.ON)
-                            {
-                                Mathf.Lerp(ref finalColor, left.lightingColor, right.lightingColor, t);
-                                finalColor *= w;
-                            }
-
-                            //纹理颜色
-                            finalColor = new RenderData.Color(Tex(u, v)) * finalColor;
-                        }
-
-                        frameBuff.SetPixel(xIndex, (int) left.point.y, finalColor.TransFormToSystemColor());
-                    }
-                }
-
-                leftX += stepx;
-            }
-        }
-
         #endregion
 
         #region 2DLine 算法
-
-        /// <summary>
-        /// 画线 不带颜色
-        /// </summary>
-        private void BresenhamDrawLine(Vertex v1, Vertex v2)
+        private void BresenhamDrawLine(Vertex p1, Vertex p2)
         {
-            int startX = (int) (Math.Round(v1.point.x, MidpointRounding.AwayFromZero));
-            int startY = (int) (Math.Round(v1.point.y, MidpointRounding.AwayFromZero));
-            int endX = (int) (Math.Round(v2.point.x, MidpointRounding.AwayFromZero));
-            int endY = (int) (Math.Round(v2.point.y, MidpointRounding.AwayFromZero));
+            int startX = (int)(Math.Round(p1.point.x, MidpointRounding.AwayFromZero));
+            int startY = (int)(Math.Round(p1.point.y, MidpointRounding.AwayFromZero));
+            int endX = (int)(Math.Round(p2.point.x, MidpointRounding.AwayFromZero));
+            int endY = (int)(Math.Round(p2.point.y, MidpointRounding.AwayFromZero));
+            int curX = startX, curY = startY;
             float disX = endX - startX;
             float disY = endY - startY;
-            float k = 0;
-            float e = -0.5f;
-            int curX = 0, curY = 0;
-            if (Math.Abs(disX) > Math.Abs(disY))
-            {
-
-                int stepX = 1;
-                if (disX < 0) stepX = -stepX;
-                else if (disX > 0) k = Math.Abs(disY / disX);
-                curY = startY;
-                curX = startX;
-                while (curX != endX)
-                {
-                    e += k;
-                    if (e > 0)
-                    {
-                        e--;
-                        if (disY > 0)
-                            curY++;
-                        else
-                            curY--;
-                    }
-
-                    if (curX > 0 && curY > 0)
-                        //TODO 差值计算颜色
-                        frameBuff.SetPixel(curX, curY, System.Drawing.Color.Red);
-                    curX += stepX;
-                }
-            }
-            else
-            {
-                int stepY = 1;
-                if (disY < 0) stepY = -stepY;
-                else if (disY > 0) k = disX / disY;
-                curX = startX;
-                curY = startY;
-                while (curY != endY)
-                {
-                    e += k;
-                    if (e > 0)
-                    {
-                        e--;
-                        e--;
-                        if (disX > 0)
-                            curX++;
-                        else
-                            curX--;
-                    }
-
-                    //TODO 差值计算颜色
-                    frameBuff.SetPixel(curX, curY, System.Drawing.Color.Red);
-                    curY += stepY;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 带颜色的画线
-        /// </summary>
-        private void BresenhamDrawLine2(Vertex p1, Vertex p2)
-        {
-            int x = (int) (System.Math.Round(p1.point.x, MidpointRounding.AwayFromZero));
-            int y = (int) (System.Math.Round(p1.point.y, MidpointRounding.AwayFromZero));
-            int dx = (int) (System.Math.Round(p2.point.x - p1.point.x, MidpointRounding.AwayFromZero));
-            int dy = (int) (System.Math.Round(p2.point.y - p1.point.y, MidpointRounding.AwayFromZero));
             int stepx = 1;
             int stepy = 1;
             //求w缓冲系数
@@ -654,56 +593,88 @@ namespace _3DDataType
             int v = 0;
             //最终颜色
             Color finalColor = new Color(1, 1, 1);
-            if (dx >= 0)
-            {
-                stepx = 1;
-            }
-            else
-            {
-                stepx = -1;
-                dx = System.Math.Abs(dx);
-            }
+            stepx = disX >= 0 ? 1 : -1;
+            stepy = disY >= 0 ? 1 : -1;
+            float e = -0.5f;
+            float k = 0;
 
-            if (dy >= 0)
+            if (Math.Abs(disX) > Math.Abs(disY))
             {
-                stepy = 1;
-            }
-            else
-            {
-                stepy = -1;
-                dy = System.Math.Abs(dy);
-            }
-
-            int dx2 = 2 * dx;
-            int dy2 = 2 * dy;
-            if (dx > dy)
-            {
-                int max = dx;
-                if (max == 0)
+                if (disX == 0)
                 {
-                    max = int.MaxValue;
+                    disX = int.MaxValue;
                 }
-
-                int error = dy2 - dx;
-                for (int i = 0; i < dx; i++)
+                k = Math.Abs(disY / disX);
+                while (true)
                 {
-                    //w缓冲
-                    t = i / (float) max;
-                    w = Mathf.Lerp(p1.onePerZ, p2.onePerZ, t);
+                    t = (curX - startX) / disX;
+                    w = Mathf.Lerp(p1.depth, p2.depth, t);
                     w = 1 / w;
                     //初始化颜色值
-                    finalColor.R = 1;
-                    finalColor.G = 1;
-                    finalColor.B = 1;
-                    if (textColors == TextColor.OFF)
+                    finalColor.Reset();
+                    //光照颜色
+                    if (isOpenLight)
                     {
-                        //光照颜色
-                        if (lightMode == LightMode.ON)
-                        {
-                            Mathf.Lerp(ref finalColor, p1.lightingColor, p2.lightingColor, t);
-                            finalColor *= w;
-                        }
+                        Mathf.Lerp(ref finalColor, p1.lightingColor, p2.lightingColor, t);
+                        finalColor *= w;
+                    }
+                    if (!isOpenTexture)
+                    {
+                        //颜色和光照混合
+                        Color temp = new Color();
+                        Mathf.Lerp(ref temp, p1.pointColor, p2.pointColor, t);
+                        finalColor = temp * w * finalColor;
+                    }
+                    else
+                    {
+                        ////uv坐标，乘以图片的宽高来对应图片的像素点
+                        u = (int)(Mathf.Lerp(p1.u, p2.u, t) * w * (imgWidth - 1));
+                        v = (int)(Mathf.Lerp(p1.v, p2.v, t) * w * (imgHeight - 1));
+                        //纹理颜色
+                        finalColor = new Color(Tex(u, v)) * finalColor;
+                    }
+                    //
+                    if (curX >= 0 && curY >= 0 && curX < width && curY < height)
+                    {
+                        frameBuff.SetPixel(curX, curY, finalColor.TransToSystemColor());
+                    }
+                    e += k;
+                    if (e > 0)
+                    {
+                        e--;
+                        if (disY > 0)
+                            curY++;
+                        else
+                            curY--;
+                    }
+                    if (curX == endX) break;
+                    curX += stepx;
 
+                }
+            }
+            else
+            {
+                if (disY == 0)
+                {
+                    disY = int.MaxValue;
+                }
+                k = Math.Abs(disX / disY);
+
+                while (true)
+                {
+                    //w缓冲
+                    t = (curY - startY) / disY;
+                    w = Mathf.Lerp(p1.depth, p2.depth, t);
+                    w = 1 / w;
+                    //初始化颜色值
+                    finalColor.Reset();
+                    if (isOpenLight)
+                    {
+                        Mathf.Lerp(ref finalColor, p1.lightingColor, p2.lightingColor, t);
+                        finalColor *= w;
+                    }
+                    if (!isOpenTexture)
+                    {
                         //颜色和光照混合
                         Color temp = new Color();
                         Mathf.Lerp(ref temp, p1.pointColor, p2.pointColor, t);
@@ -712,97 +683,29 @@ namespace _3DDataType
                     else
                     {
                         //uv坐标
-                        u = (int) (Mathf.Lerp(p1.u, p2.u, t) * w * (imgWidth - 1));
-                        v = (int) (Mathf.Lerp(p1.v, p2.v, t) * w * (imgHeight - 1));
-                        //光照颜色
-                        if (lightMode == LightMode.ON)
-                        {
-                            Mathf.Lerp(ref finalColor, p1.lightingColor, p2.lightingColor, t);
-                            finalColor *= w;
-                        }
+                        u = (int)(Mathf.Lerp(p1.u, p2.u, t) * w * (imgWidth - 1));
+                        v = (int)(Mathf.Lerp(p1.v, p2.v, t) * w * (imgHeight - 1));
 
-                        ////纹理颜色
-                        finalColor = new RenderData.Color(Tex(u, v)) * finalColor;
+                        //纹理颜色
+                        finalColor = new Color(Tex(u, v)) * finalColor;
                     }
 
-                    if (x >= 0 && y >= 0 && x < width && y < height)
+                    if (curX >= 0 && curY >= 0 && curX < width && curY < height)
                     {
-                        frameBuff.SetPixel(x, y, finalColor.TransFormToSystemColor());
+                        frameBuff.SetPixel(curX, curY, finalColor.TransToSystemColor());
                     }
 
-                    if (error >= 0)
+                    e += k;
+                    if (e > 0)
                     {
-                        error -= dx2;
-                        y += stepy;
+                        e--;
+                        if (disX > 0)
+                            curX++;
+                        else
+                            curX--;
                     }
-
-                    error += dy2;
-                    x += stepx;
-
-                }
-            }
-            else
-            {
-                int max = dy;
-                if (max == 0)
-                {
-                    max = int.MaxValue;
-                }
-
-                int error = dx2 - dy;
-                for (int i = 0; i < dy; i++)
-                {
-                    //w缓冲
-                    t = i / (float) max;
-                    w = Mathf.Lerp(p1.onePerZ, p2.onePerZ, t);
-                    w = 1 / w;
-                    //初始化颜色值
-                    finalColor.R = 1;
-                    finalColor.G = 1;
-                    finalColor.B = 1;
-                    if (textColors == TextColor.OFF)
-                    {
-                        //光照颜色
-                        if (lightMode == LightMode.ON)
-                        {
-                            Mathf.Lerp(ref finalColor, p1.lightingColor, p2.lightingColor, t);
-                            finalColor *= w;
-                        }
-
-                        //颜色和光照混合
-                        Color temp = new Color();
-                        Mathf.Lerp(ref temp, p1.pointColor, p2.pointColor, t);
-                        finalColor = temp * w * finalColor;
-                    }
-                    else
-                    {
-                        //uv坐标
-                        u = (int) (Mathf.Lerp(p1.u, p2.u, t) * w * (imgWidth - 1));
-                        v = (int) (Mathf.Lerp(p1.v, p2.v, t) * w * (imgHeight - 1));
-                        //光照颜色
-                        if (lightMode == LightMode.ON)
-                        {
-                            Mathf.Lerp(ref finalColor, p1.lightingColor, p2.lightingColor, t);
-                            finalColor *= w;
-                        }
-
-                        ////纹理颜色
-                        finalColor = new RenderData.Color(Tex(u, v)) * finalColor;
-                    }
-
-                    if (x >= 0 && y >= 0 && x < width && y < height)
-                    {
-                        frameBuff.SetPixel(x, y, finalColor.TransFormToSystemColor());
-                    }
-
-                    if (error >= 0)
-                    {
-                        error -= dy2;
-                        x += stepx;
-                    }
-
-                    error += dx2;
-                    y += stepy;
+                    if (curY == endY) break;
+                    curY += stepy;
 
                 }
             }
@@ -863,5 +766,204 @@ namespace _3DDataType
                     break;
             }
         }
+
+        #region 裁剪-- 一个方法，可以用于裁剪六个面
+
+        Queue<Triangle> clipQueue = new Queue<Triangle>();//裁剪列表
+
+        Vector4[] dotVectors =//顶点和该向量插值，判断顶点到平面的直线距离
+          {
+                new Vector4(0,0,1),//前
+                new Vector4(0,0,-1),//后
+                new Vector4(1,0,0),//左
+                new Vector4(-1,0,0),//右
+                new Vector4(0,1,0),//上
+                new Vector4(0,-1,0)//下
+        };
+        float[] distance = new float[] { -1, -1, 0f, -799, 0f, -599 };//各个平面到原点“距离”
+        //bool[] isfront = { true, false, false, false, false, false };//是否是近平面剪裁
+        //裁剪方法
+        private bool clip(Triangle triangle, ref ValueTuple<Triangle, Triangle, int> outValue)
+        {
+            bool isClip = false;
+            //i代表将裁剪那个平面，默认都是从近平面开始，若该三角形被前面的面（近平面）裁剪，
+            //其产生的子三角形将从后面的面（原平面）裁剪
+            for (int i = triangle.startIndex; i < distance.Length; i++)
+            {
+                if (isClip == false)
+                {
+                    isClip = clip_Test(triangle[0], triangle[1], triangle[2], dotVectors[i], distance[i], i,ref outValue);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return isClip;
+        }
+
+        /// <summary>
+        /// 裁剪主方法
+        /// </summary>
+        /// <param name="v1">顶点</param>
+        /// <param name="v2">顶点</param>
+        /// <param name="v3">顶点</param>
+        /// <param name="dotVector">点积向量，求顶点到平面的距离</param>
+        /// <param name="distance">平面“位置”</param>
+        /// <param name="startIndex">当前裁剪的是那个平面，其裁剪产生的子三角形将从下一个平面开始裁剪</param>
+        /// <returns>是否被裁剪</returns>
+        private bool clip_Test(Vertex v1, Vertex v2, Vertex v3, Vector4 dotVector, float distance, int startIndex,ref ValueTuple<Triangle, Triangle,int> outValue)
+        {
+            outValue.Item3 = 1;
+            //插值因子
+            float t = 0;
+            //点在法线上的投影
+            float projectV1 = Vector4.Dot(dotVector, v1.point);
+            float projectV2 = Vector4.Dot(dotVector, v2.point);
+            float projectV3 = Vector4.Dot(dotVector, v3.point);
+            //点与点之间的距离
+            float dv1v2 = Math.Abs(projectV1 - projectV2);
+            float dv1v3 = Math.Abs(projectV1 - projectV3);
+            float dv2v3 = Math.Abs(projectV2 - projectV3);
+            //点倒平面的距离
+            float pv1 = Math.Abs(projectV1 - distance);
+            float pv2 = Math.Abs(projectV2 - distance);
+            float pv3 = Math.Abs(projectV3 - distance);
+
+            //v1,v2,v3都在立方体内
+            if (projectV1 > distance && projectV2 > distance && projectV3 > distance)
+            {
+                //不做任何处理
+                outValue.Item1 = new Triangle(v1, v2, v3);
+                return false;
+            }
+            else if (projectV1 < distance && projectV2 > distance && projectV3 > distance)//只有v1在外
+            {
+                Vertex temp2 = new Vertex();
+                t = pv2 / dv1v2;
+                temp2.point.x = Mathf.Lerp(v2.point.x, v1.point.x, t);
+                temp2.point.y = Mathf.Lerp(v2.point.y, v1.point.y, t);
+                temp2.point.z = Mathf.Lerp(v2.point.z, v1.point.z, t);
+
+                Mathf.Lerp( ref temp2, v2, v1, t);
+                Vertex temp1 = new Vertex();
+                t = pv3 / dv1v3;
+                temp1.point.x = Mathf.Lerp(v3.point.x, v1.point.x, t);
+                temp1.point.y = Mathf.Lerp(v3.point.y, v1.point.y, t);
+                temp1.point.z = Mathf.Lerp(v3.point.z, v1.point.z, t);
+                Mathf.Lerp(ref temp1, v3, v1, t);
+                //画线或光栅化
+                outValue.Item1 = new Triangle(temp1, temp2, v2, startIndex + 1);
+                outValue.Item2 = new Triangle(temp1, v2, v3, startIndex + 1);
+                outValue.Item3 = 2;
+                return true;
+            }
+            else if (projectV1 > distance && projectV2 < distance && projectV3 > distance)//只有v2在外
+            {
+                Vertex temp1 = new Vertex();
+                t = pv1 / dv1v2;
+                temp1.point.x = Mathf.Lerp(v1.point.x, v2.point.x, t);
+                temp1.point.y = Mathf.Lerp(v1.point.y, v2.point.y, t);
+                temp1.point.z = Mathf.Lerp(v1.point.z, v2.point.z, t);
+                Mathf.Lerp(ref temp1, v1, v2, t);
+
+
+                Vertex temp2 = new Vertex();
+                t = pv3 / dv2v3;
+                temp2.point.x = Mathf.Lerp(v3.point.x, v2.point.x, t);
+                temp2.point.y = Mathf.Lerp(v3.point.y, v2.point.y, t);
+                temp2.point.z = Mathf.Lerp(v3.point.z, v2.point.z, t);
+                Mathf.Lerp(ref temp2, v3, v2, t);
+                //画线或光栅化
+                outValue.Item1 = new Triangle(temp1, temp2, v3, startIndex + 1);
+                outValue.Item2 = new Triangle(temp1, v3, v1, startIndex + 1);
+                outValue.Item3 = 2;
+                return true;
+            }
+            else if (projectV1 > distance && projectV2 > distance && projectV3 < distance)//只有v3在外
+            {
+                Vertex temp1 = new Vertex();
+                t = pv2 / dv2v3;
+                temp1.point.x = Mathf.Lerp(v2.point.x, v3.point.x, t);
+                temp1.point.y = Mathf.Lerp(v2.point.y, v3.point.y, t);
+                temp1.point.z = Mathf.Lerp(v2.point.z, v3.point.z, t);
+                Mathf.Lerp(ref temp1, v2, v3, t);
+
+                Vertex temp2 = new Vertex();
+                t = pv1 / dv1v3;
+                temp2.point.x = Mathf.Lerp(v1.point.x, v3.point.x, t);
+                temp2.point.y = Mathf.Lerp(v1.point.y, v3.point.y, t);
+                temp2.point.z = Mathf.Lerp(v1.point.z, v3.point.z, t);
+                Mathf.Lerp(ref temp2, v1, v3, t);
+                //画线或光栅化
+                outValue.Item1 = new Triangle(temp1, temp2, v1, startIndex + 1);
+                outValue.Item2 = new Triangle(temp1, v1, v2, startIndex + 1);
+                outValue.Item3 = 2;
+                return true;
+            }
+
+            else if (projectV1 > distance && projectV2 < distance && projectV3 < distance)//只有v1在内
+            {
+                Vertex temp1 = new Vertex();
+                t = pv1 / dv1v2;
+                temp1.point.x = Mathf.Lerp(v1.point.x, v2.point.x, t);
+                temp1.point.y = Mathf.Lerp(v1.point.y, v2.point.y, t);
+                temp1.point.z = Mathf.Lerp(v1.point.z, v2.point.z, t);
+                Mathf.Lerp(ref temp1, v1, v2, t);
+
+                Vertex temp2 = new Vertex();
+                t = pv1 / dv1v3;
+                temp2.point.x = Mathf.Lerp(v1.point.x, v3.point.x, t);
+                temp2.point.y = Mathf.Lerp(v1.point.y, v3.point.y, t);
+                temp2.point.z = Mathf.Lerp(v1.point.z, v3.point.z, t);
+                Mathf.Lerp(ref temp2, v1, v3, t);
+                //画线或光栅化
+                outValue.Item1 = new Triangle(temp1, temp2, v1, startIndex + 1);
+                return true;
+            }
+            else if (projectV1 < distance && projectV2 > distance && projectV3 < distance)//只有v2在内
+            {
+                Vertex temp1 = new Vertex();
+                t = pv2 / dv2v3;
+                temp1.point.x = Mathf.Lerp(v2.point.x, v3.point.x, t);
+                temp1.point.y = Mathf.Lerp(v2.point.y, v3.point.y, t);
+                temp1.point.z = Mathf.Lerp(v2.point.z, v3.point.z, t);
+                Mathf.Lerp(ref temp1, v2, v3, t);
+
+                Vertex temp2 = new Vertex();
+                t = pv2 / dv1v2;
+                temp2.point.x = Mathf.Lerp(v2.point.x, v1.point.x, t);
+                temp2.point.y = Mathf.Lerp(v2.point.y, v1.point.y, t);
+                temp2.point.z = Mathf.Lerp(v2.point.z, v1.point.z, t);
+                Mathf.Lerp(ref temp2, v2, v1, t);
+                //画线或光栅化
+                clipQueue.Enqueue(new Triangle(temp1, temp2, v2, startIndex + 1));
+                return true;
+            }
+            else if (projectV1 < distance && projectV2 < distance && projectV3 > distance)//只有v3在内
+            {
+                Vertex temp1 = new Vertex();
+                t = pv3 / dv1v3;
+                temp1.point.x = Mathf.Lerp(v3.point.x, v1.point.x, t);
+                temp1.point.y = Mathf.Lerp(v3.point.y, v1.point.y, t);
+                temp1.point.z = Mathf.Lerp(v3.point.z, v1.point.z, t);
+                Mathf.Lerp(ref temp1, v3, v1, t);
+
+                Vertex temp2 = new Vertex();
+                t = pv3 / dv2v3;
+                temp2.point.x = Mathf.Lerp(v3.point.x, v2.point.x, t);
+                temp2.point.y = Mathf.Lerp(v3.point.y, v2.point.y, t);
+                temp2.point.z = Mathf.Lerp(v3.point.z, v2.point.z, t);
+                Mathf.Lerp(ref temp2, v3, v2, t);
+                //画线或光栅化
+                clipQueue.Enqueue(new Triangle(temp1, temp2, v3, startIndex + 1));
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+
     }
 }

@@ -132,5 +132,13 @@ namespace _3DDataType
                 this = Zero;
             return this;
         }
+
+        /// <summary>
+        /// È¡·´
+        /// </summary>
+        public static Vector4 opposite(Vector4 v)
+        {
+            return new Vector4(-v.x, -v.y, -v.z, v.w);
+        }
     }
 }

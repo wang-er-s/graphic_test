@@ -39,12 +39,13 @@ namespace _3DDataType.RenderData
             {
                 Vector3 v = (eyeWorldPos - vertexWorldPos).Normalize();
                 Vector3 h = (dir + v).Normalize();
-                specularLight = (float) Math.Pow(Mathf.Max(Vector3.Dot(normal, h), 0), mesh.material.shininess);
+                specularLight = (float)Math.Pow(Mathf.Max(Vector3.Dot(normal, h), 0), mesh.material.shininess);
             }
 
             Color specularColor = mesh.material.ks * specularLight * light.lightColor;
 
-            vertex.lightingColor = emissiveColor + ambientColor + diffuseColor + specularColor;
+            vertex.lightingColor = emissiveColor+  ambientColor + diffuseColor + specularColor;
+
         }
     }
 }
