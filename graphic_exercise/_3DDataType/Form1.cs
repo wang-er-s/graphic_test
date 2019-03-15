@@ -57,7 +57,7 @@ namespace _3DDataType
             mesh = new Mesh(CubeTestData.PointList, CubeTestData.Indexs, CubeTestData.UVs, CubeTestData.VertColors,
                 CubeTestData.Normals, QuadTestData.Mat);
             //定义光照
-            light = new Light(new Vector3(0, 0, -10), new Color(1, 1, 1));
+            light = new Light(new Vector3(0, 10, 0), new Color(1, 1, 1));
             //定义相机
             camera = new Camera(new Vector4(0, 4, 5, 1), new Vector4(0, 1, 0,0), new Vector4(0, 4, 6, 1),
                 (float) Math.PI /3, width / (float) height, 5, 30);
@@ -67,7 +67,7 @@ namespace _3DDataType
             MouseMove += OnMouseMove;
 
             KeyPress += OnLeftKeyDown;
-            
+
 
             System.Timers.Timer mainTimer = new System.Timers.Timer(1000 / 10f);
             mainTimer.Elapsed += new ElapsedEventHandler(Tick);
@@ -104,7 +104,6 @@ namespace _3DDataType
                 canRotate = true;
             startXPos = e.X;
             startYPos = e.Y;
-            Console.WriteLine("e.x = " + e.X);
         }
          
         private void OnMouseUp(object sender, MouseEventArgs e)
@@ -121,6 +120,7 @@ namespace _3DDataType
                 rotY = angle;
             else if (rotY > 0)
                 rotY = -angle;
+            
             rotX = e.X - startXPos;
             if (rotX < 0)
                 rotX = -angle;
@@ -131,10 +131,10 @@ namespace _3DDataType
             Vector4 forward = camera.lookAt - camera.eyePosition;
             forward.Normalize();
             Vector4 right = Vector4.Cross(camera.up, forward);
-            Vector4 pos = camera.lookAt - camera.eyePosition;
-            pos = Matrix4x4.ArbitraryAxis(right, rotY) * Matrix4x4.RotateY(rotX) * pos;
-            camera.lookAt = pos + camera.eyePosition;
-
+            Vector4 lookPos = camera.lookAt - camera.eyePosition;
+            lookPos = Matrix4x4.ArbitraryAxis(right, rotY) * Matrix4x4.RotateY(rotX) * lookPos;
+            camera.lookAt = lookPos + camera.eyePosition;
+            //camera.up = Vector4.Cross( camera.lookAt,right).Normalize();
         }
 
         private void OnLeftKeyDown(object sender,KeyPressEventArgs e)
@@ -164,8 +164,7 @@ namespace _3DDataType
             {
                 camera.eyePosition -= forward * 0.1f;
             }
-            //camera.lookAt = camera.eyePosition + new Vector4(0, 0, 1, 0);
-            Console.WriteLine(camera.eyePosition);
+            camera.up = up;
         }
         #endregion
 
@@ -186,6 +185,8 @@ namespace _3DDataType
 
         private float rotY = 0f;
         private float rotX = 0f;
+
+        private float rot = 0;
         private void Tick(object sender, EventArgs e)
         {
             lock (frameBuff)
@@ -193,7 +194,7 @@ namespace _3DDataType
                 ClearBuff();
 
                 //*Matrix4x4.RotateX(rot)
-                Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 4, 15)) * Matrix4x4.RotateY(0) *
+                Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 3, 15)) * Matrix4x4.RotateY(0) *
                                         Matrix4x4.RotateX(-0.3f) * Matrix4x4.RotateZ(0);
                 Matrix4x4 viewMatrix = Camera.BuildViewMatrix(camera.eyePosition, camera.up, camera.lookAt);
                 Matrix4x4 projectionMatrix =
@@ -203,11 +204,9 @@ namespace _3DDataType
             }
         }
 
-        private uint showTrisCount; //测试数据，记录当前显示的三角形数
 
         private void Draw(Matrix4x4 m, Matrix4x4 v, Matrix4x4 p)
         {
-            showTrisCount = 0;
             for (int i = 0; i + 2 < mesh.vertices.Length; i += 3)
             {
                 DrawTriangle(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2], m, v, p);
@@ -217,10 +216,6 @@ namespace _3DDataType
         /// <summary>
         /// 绘制三角形
         /// </summary>
-        /// <param name="p1"></param>
-        /// <param name="p2"></param>
-        /// <param name="p3"></param>
-        /// <param name="mvp"></param>
         private void DrawTriangle(Vertex p1, Vertex p2, Vertex p3, Matrix4x4 m, Matrix4x4 v, Matrix4x4 p)
         {
             //--------------------几何阶段---------------------------
@@ -270,7 +265,7 @@ namespace _3DDataType
             {
                 ValueTuple<Triangle, Triangle, int> outValue = new ValueTuple<Triangle, Triangle, int>(
                     new Triangle(p1, p2, p3),new Triangle(new Vertex(),new Vertex(),new Vertex()) ,1);
-                clip(new Triangle(p1, p2, p3), ref outValue);
+                Clip2(new Triangle(p1, p2, p3), ref outValue);
                 Rasterization(outValue.Item1[0], outValue.Item1[1], outValue.Item1[2]);
                 if (outValue.Item3 == 2)
                 {
@@ -582,19 +577,10 @@ namespace _3DDataType
             int curX = startX, curY = startY;
             float disX = endX - startX;
             float disY = endY - startY;
-            int stepx = 1;
-            int stepy = 1;
-            //求w缓冲系数
-            float w = 0;
+            int stepx = Math.Sign(disX);
+            int stepy = Math.Sign(disY);
             //插值因子
             float t = 0;
-            //uv坐标
-            int u = 0;
-            int v = 0;
-            //最终颜色
-            Color finalColor = new Color(1, 1, 1);
-            stepx = disX >= 0 ? 1 : -1;
-            stepy = disY >= 0 ? 1 : -1;
             float e = -0.5f;
             float k = 0;
 
@@ -608,48 +594,16 @@ namespace _3DDataType
                 while (true)
                 {
                     t = (curX - startX) / disX;
-                    w = Mathf.Lerp(p1.depth, p2.depth, t);
-                    w = 1 / w;
-                    //初始化颜色值
-                    finalColor.Reset();
-                    //光照颜色
-                    if (isOpenLight)
-                    {
-                        Mathf.Lerp(ref finalColor, p1.lightingColor, p2.lightingColor, t);
-                        finalColor *= w;
-                    }
-                    if (!isOpenTexture)
-                    {
-                        //颜色和光照混合
-                        Color temp = new Color();
-                        Mathf.Lerp(ref temp, p1.pointColor, p2.pointColor, t);
-                        finalColor = temp * w * finalColor;
-                    }
-                    else
-                    {
-                        ////uv坐标，乘以图片的宽高来对应图片的像素点
-                        u = (int)(Mathf.Lerp(p1.u, p2.u, t) * w * (imgWidth - 1));
-                        v = (int)(Mathf.Lerp(p1.v, p2.v, t) * w * (imgHeight - 1));
-                        //纹理颜色
-                        finalColor = new Color(Tex(u, v)) * finalColor;
-                    }
-                    //
-                    if (curX >= 0 && curY >= 0 && curX < width && curY < height)
-                    {
-                        frameBuff.SetPixel(curX, curY, finalColor.TransToSystemColor());
-                    }
+                    //混合颜色和贴图
+                    MixColor(p1, p2, t, curX, curY);
                     e += k;
                     if (e > 0)
                     {
                         e--;
-                        if (disY > 0)
-                            curY++;
-                        else
-                            curY--;
+                        curY += stepy;
                     }
                     if (curX == endX) break;
                     curX += stepx;
-
                 }
             }
             else
@@ -659,55 +613,53 @@ namespace _3DDataType
                     disY = int.MaxValue;
                 }
                 k = Math.Abs(disX / disY);
-
                 while (true)
                 {
-                    //w缓冲
                     t = (curY - startY) / disY;
-                    w = Mathf.Lerp(p1.depth, p2.depth, t);
-                    w = 1 / w;
-                    //初始化颜色值
-                    finalColor.Reset();
-                    if (isOpenLight)
-                    {
-                        Mathf.Lerp(ref finalColor, p1.lightingColor, p2.lightingColor, t);
-                        finalColor *= w;
-                    }
-                    if (!isOpenTexture)
-                    {
-                        //颜色和光照混合
-                        Color temp = new Color();
-                        Mathf.Lerp(ref temp, p1.pointColor, p2.pointColor, t);
-                        finalColor = temp * w * finalColor;
-                    }
-                    else
-                    {
-                        //uv坐标
-                        u = (int)(Mathf.Lerp(p1.u, p2.u, t) * w * (imgWidth - 1));
-                        v = (int)(Mathf.Lerp(p1.v, p2.v, t) * w * (imgHeight - 1));
-
-                        //纹理颜色
-                        finalColor = new Color(Tex(u, v)) * finalColor;
-                    }
-
-                    if (curX >= 0 && curY >= 0 && curX < width && curY < height)
-                    {
-                        frameBuff.SetPixel(curX, curY, finalColor.TransToSystemColor());
-                    }
-
+                    //混合颜色和贴图
+                    MixColor(p1, p2, t, curX, curY);
                     e += k;
                     if (e > 0)
                     {
                         e--;
-                        if (disX > 0)
-                            curX++;
-                        else
-                            curX--;
+                        curX += stepx;
                     }
                     if (curY == endY) break;
                     curY += stepy;
-
                 }
+            }
+        }
+
+        private void MixColor(Vertex v1,Vertex v2,float t,int curX,int curY)
+        {
+            Color finalColor = new Color(1, 1, 1);
+            float w = Mathf.Lerp(v1.depth, v2.depth, t);
+            if (w == 0) w = int.MaxValue;
+            w = 1 / w;
+            if (isOpenLight)
+            {
+                Mathf.Lerp(ref finalColor, v1.lightingColor, v2.lightingColor, t);
+                finalColor *= w;
+            }
+            if (!isOpenTexture)
+            {
+                //颜色和光照混合
+                Color temp = new Color();
+                Mathf.Lerp(ref temp, v1.pointColor, v2.pointColor, t);
+                finalColor = temp * w * finalColor;
+            }
+            else
+            {
+                //uv坐标
+                int u = (int)(Mathf.Lerp(v1.u, v2.u, t) * w * (imgWidth - 1));
+                int v = (int)(Mathf.Lerp(v1.v, v2.v, t) * w * (imgHeight - 1));
+
+                //纹理颜色
+                finalColor = new Color(Tex(u, v)) * finalColor;
+            }
+            if (curX >= 0 && curY >= 0 && curX < width && curY < height)
+            {
+                frameBuff.SetPixel(curX, curY, finalColor.TransToSystemColor());
             }
         }
 
@@ -767,203 +719,184 @@ namespace _3DDataType
             }
         }
 
-        #region 裁剪-- 一个方法，可以用于裁剪六个面
-
-        Queue<Triangle> clipQueue = new Queue<Triangle>();//裁剪列表
-
-        Vector4[] dotVectors =//顶点和该向量插值，判断顶点到平面的直线距离
-          {
-                new Vector4(0,0,1),//前
-                new Vector4(0,0,-1),//后
-                new Vector4(1,0,0),//左
-                new Vector4(-1,0,0),//右
-                new Vector4(0,1,0),//上
-                new Vector4(0,-1,0)//下
+        List<ValueTuple<Vector3, int, Func<float, int, bool>>> normalAndDisList = new List<(Vector3, int, Func<float, int, bool>)>()
+        {
+            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,0,-1),-1,(view,dis)=>view>dis),//前
+            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,0,1),1,(view,dis)=>view<dis),//后
+            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(1,0,0),1,(view,dis)=>view>dis),//左
+            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(-1,0,0),-799,(view,dis)=>view>dis),//右
+            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,-1,0),0,(view,dis)=>view<dis),//上
+            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,1,0),580,(view,dis)=>view<dis),//下
         };
-        float[] distance = new float[] { -1, -1, 0f, -799, 0f, -599 };//各个平面到原点“距离”
-        //bool[] isfront = { true, false, false, false, false, false };//是否是近平面剪裁
-        //裁剪方法
-        private bool clip(Triangle triangle, ref ValueTuple<Triangle, Triangle, int> outValue)
+
+        private void Clip2(Triangle triangle,ref ValueTuple<Triangle, Triangle, int> outValue)
         {
             bool isClip = false;
-            //i代表将裁剪那个平面，默认都是从近平面开始，若该三角形被前面的面（近平面）裁剪，
-            //其产生的子三角形将从后面的面（原平面）裁剪
-            for (int i = triangle.startIndex; i < distance.Length; i++)
+
+            foreach (var item in normalAndDisList)
             {
-                if (isClip == false)
+                if (!isClip)
                 {
-                    isClip = clip_Test(triangle[0], triangle[1], triangle[2], dotVectors[i], distance[i], i,ref outValue);
+                    isClip = ClipTest(triangle[0], triangle[1], triangle[2], item, ref outValue);
                 }
                 else
                 {
                     break;
                 }
             }
-            return isClip;
         }
 
-        /// <summary>
-        /// 裁剪主方法
-        /// </summary>
-        /// <param name="v1">顶点</param>
-        /// <param name="v2">顶点</param>
-        /// <param name="v3">顶点</param>
-        /// <param name="dotVector">点积向量，求顶点到平面的距离</param>
-        /// <param name="distance">平面“位置”</param>
-        /// <param name="startIndex">当前裁剪的是那个平面，其裁剪产生的子三角形将从下一个平面开始裁剪</param>
-        /// <returns>是否被裁剪</returns>
-        private bool clip_Test(Vertex v1, Vertex v2, Vertex v3, Vector4 dotVector, float distance, int startIndex,ref ValueTuple<Triangle, Triangle,int> outValue)
+        bool ClipTest(Vertex v1, Vertex v2, Vertex v3, ValueTuple<Vector3, int, Func<float, int, bool>> norAndDis, ref ValueTuple<Triangle, Triangle, int> outValue)
         {
             outValue.Item3 = 1;
-            //插值因子
-            float t = 0;
+            Vector3 normal = norAndDis.Item1;
+            int dis = norAndDis.Item2;
+            Func<float, int, bool> checkIsIn = norAndDis.Item3;
             //点在法线上的投影
-            float projectV1 = Vector4.Dot(dotVector, v1.point);
-            float projectV2 = Vector4.Dot(dotVector, v2.point);
-            float projectV3 = Vector4.Dot(dotVector, v3.point);
+            float projectV1 = Vector3.Dot(normal, v1.point);
+            float projectV2 = Vector3.Dot(normal, v2.point);
+            float projectV3 = Vector3.Dot(normal, v3.point);
             //点与点之间的距离
             float dv1v2 = Math.Abs(projectV1 - projectV2);
             float dv1v3 = Math.Abs(projectV1 - projectV3);
             float dv2v3 = Math.Abs(projectV2 - projectV3);
-            //点倒平面的距离
-            float pv1 = Math.Abs(projectV1 - distance);
-            float pv2 = Math.Abs(projectV2 - distance);
-            float pv3 = Math.Abs(projectV3 - distance);
+            //颠倒平面的距离
+            float pv1 = Math.Abs(projectV1 - dis);
+            float pv2 = Math.Abs(projectV2 - dis);
+            float pv3 = Math.Abs(projectV3 - dis);
+            //插值
+            float t = 0;
 
-            //v1,v2,v3都在立方体内
-            if (projectV1 > distance && projectV2 > distance && projectV3 > distance)
+            if (checkIsIn(projectV1, dis) && checkIsIn(projectV2, dis) && checkIsIn(projectV3, dis))
             {
-                //不做任何处理
-                outValue.Item1 = new Triangle(v1, v2, v3);
+                //都在里面 
                 return false;
             }
-            else if (projectV1 < distance && projectV2 > distance && projectV3 > distance)//只有v1在外
+            if (!checkIsIn(projectV1, dis) && checkIsIn(projectV2, dis) && checkIsIn(projectV3, dis))//v1在外面
             {
-                Vertex temp2 = new Vertex();
+                Vertex temp12 = new Vertex();
                 t = pv2 / dv1v2;
-                temp2.point.x = Mathf.Lerp(v2.point.x, v1.point.x, t);
-                temp2.point.y = Mathf.Lerp(v2.point.y, v1.point.y, t);
-                temp2.point.z = Mathf.Lerp(v2.point.z, v1.point.z, t);
+                temp12.point.x = Mathf.Lerp(v2.point.x, v1.point.x, t);
+                temp12.point.y = Mathf.Lerp(v2.point.y, v1.point.y, t);
+                temp12.point.z = dis;
+                temp12.point.w = 1;
+                Mathf.Lerp(ref temp12, v2, v1, t);
 
-                Mathf.Lerp( ref temp2, v2, v1, t);
-                Vertex temp1 = new Vertex();
+                Vertex temp13 = new Vertex();
                 t = pv3 / dv1v3;
-                temp1.point.x = Mathf.Lerp(v3.point.x, v1.point.x, t);
-                temp1.point.y = Mathf.Lerp(v3.point.y, v1.point.y, t);
-                temp1.point.z = Mathf.Lerp(v3.point.z, v1.point.z, t);
-                Mathf.Lerp(ref temp1, v3, v1, t);
-                //画线或光栅化
-                outValue.Item1 = new Triangle(temp1, temp2, v2, startIndex + 1);
-                outValue.Item2 = new Triangle(temp1, v2, v3, startIndex + 1);
+                temp13.point.x = Mathf.Lerp(v3.point.x, v1.point.x, t);
+                temp13.point.y = Mathf.Lerp(v3.point.y, v1.point.y, t);
+                temp13.point.z = dis;
+                temp13.point.w = 1;
+                Mathf.Lerp(ref temp13, v3, v1, t);
+
+                outValue.Item1 = new Triangle(temp13, temp12, v2);
+                outValue.Item2 = new Triangle(temp13, v2, v3);
                 outValue.Item3 = 2;
                 return true;
             }
-            else if (projectV1 > distance && projectV2 < distance && projectV3 > distance)//只有v2在外
+            if (checkIsIn(projectV1, dis) && !checkIsIn(projectV2, dis) && checkIsIn(projectV3, dis))//v2在外面
             {
-                Vertex temp1 = new Vertex();
+                Vertex temp12 = new Vertex();
                 t = pv1 / dv1v2;
-                temp1.point.x = Mathf.Lerp(v1.point.x, v2.point.x, t);
-                temp1.point.y = Mathf.Lerp(v1.point.y, v2.point.y, t);
-                temp1.point.z = Mathf.Lerp(v1.point.z, v2.point.z, t);
-                Mathf.Lerp(ref temp1, v1, v2, t);
+                temp12.point.x = Mathf.Lerp(v1.point.x, v2.point.x, t);
+                temp12.point.y = Mathf.Lerp(v1.point.y, v2.point.y, t);
+                temp12.point.z = Mathf.Lerp(v1.point.z, v2.point.z, t);
+                Mathf.Lerp(ref temp12, v1, v2, t);
 
 
-                Vertex temp2 = new Vertex();
+                Vertex temp23 = new Vertex();
                 t = pv3 / dv2v3;
-                temp2.point.x = Mathf.Lerp(v3.point.x, v2.point.x, t);
-                temp2.point.y = Mathf.Lerp(v3.point.y, v2.point.y, t);
-                temp2.point.z = Mathf.Lerp(v3.point.z, v2.point.z, t);
-                Mathf.Lerp(ref temp2, v3, v2, t);
-                //画线或光栅化
-                outValue.Item1 = new Triangle(temp1, temp2, v3, startIndex + 1);
-                outValue.Item2 = new Triangle(temp1, v3, v1, startIndex + 1);
+                temp23.point.x = Mathf.Lerp(v3.point.x, v2.point.x, t);
+                temp23.point.y = Mathf.Lerp(v3.point.y, v2.point.y, t);
+                temp23.point.z = Mathf.Lerp(v3.point.z, v2.point.z, t);
+                Mathf.Lerp(ref temp23, v3, v2, t);
+
+                outValue.Item1 = new Triangle(temp12, temp23, v3);
+                outValue.Item2 = new Triangle(temp12, v3, v1);
                 outValue.Item3 = 2;
                 return true;
             }
-            else if (projectV1 > distance && projectV2 > distance && projectV3 < distance)//只有v3在外
+            if (checkIsIn(projectV1, dis) && checkIsIn(projectV2, dis) && !checkIsIn(projectV3, dis))//v3在外面
             {
-                Vertex temp1 = new Vertex();
+                Vertex temp23 = new Vertex();
                 t = pv2 / dv2v3;
-                temp1.point.x = Mathf.Lerp(v2.point.x, v3.point.x, t);
-                temp1.point.y = Mathf.Lerp(v2.point.y, v3.point.y, t);
-                temp1.point.z = Mathf.Lerp(v2.point.z, v3.point.z, t);
-                Mathf.Lerp(ref temp1, v2, v3, t);
+                temp23.point.x = Mathf.Lerp(v2.point.x, v3.point.x, t);
+                temp23.point.y = Mathf.Lerp(v2.point.y, v3.point.y, t);
+                temp23.point.z = Mathf.Lerp(v2.point.z, v3.point.z, t);
+                Mathf.Lerp(ref temp23, v2, v3, t);
 
-                Vertex temp2 = new Vertex();
+                Vertex temp13 = new Vertex();
                 t = pv1 / dv1v3;
-                temp2.point.x = Mathf.Lerp(v1.point.x, v3.point.x, t);
-                temp2.point.y = Mathf.Lerp(v1.point.y, v3.point.y, t);
-                temp2.point.z = Mathf.Lerp(v1.point.z, v3.point.z, t);
-                Mathf.Lerp(ref temp2, v1, v3, t);
-                //画线或光栅化
-                outValue.Item1 = new Triangle(temp1, temp2, v1, startIndex + 1);
-                outValue.Item2 = new Triangle(temp1, v1, v2, startIndex + 1);
+                temp13.point.x = Mathf.Lerp(v1.point.x, v3.point.x, t);
+                temp13.point.y = Mathf.Lerp(v1.point.y, v3.point.y, t);
+                temp13.point.z = Mathf.Lerp(v1.point.z, v3.point.z, t);
+                Mathf.Lerp(ref temp13, v1, v3, t);
+
+                outValue.Item1 = new Triangle(temp23, temp13, v1);
+                outValue.Item2 = new Triangle(temp23, v1, v2);
                 outValue.Item3 = 2;
                 return true;
             }
-
-            else if (projectV1 > distance && projectV2 < distance && projectV3 < distance)//只有v1在内
+            if (!checkIsIn(projectV1, dis) && !checkIsIn(projectV2, dis) && checkIsIn(projectV3, dis))//v1 v2在外面
             {
-                Vertex temp1 = new Vertex();
-                t = pv1 / dv1v2;
-                temp1.point.x = Mathf.Lerp(v1.point.x, v2.point.x, t);
-                temp1.point.y = Mathf.Lerp(v1.point.y, v2.point.y, t);
-                temp1.point.z = Mathf.Lerp(v1.point.z, v2.point.z, t);
-                Mathf.Lerp(ref temp1, v1, v2, t);
+                Vertex temp13 = new Vertex();
+                t = pv3 / dv1v3;
+                temp13.point.x = Mathf.Lerp(v3.point.x, v1.point.x, t);
+                temp13.point.y = Mathf.Lerp(v3.point.y, v1.point.y, t);
+                temp13.point.z = Mathf.Lerp(v3.point.z, v1.point.z, t);
+                Mathf.Lerp(ref temp13, v3, v1, t);
 
-                Vertex temp2 = new Vertex();
-                t = pv1 / dv1v3;
-                temp2.point.x = Mathf.Lerp(v1.point.x, v3.point.x, t);
-                temp2.point.y = Mathf.Lerp(v1.point.y, v3.point.y, t);
-                temp2.point.z = Mathf.Lerp(v1.point.z, v3.point.z, t);
-                Mathf.Lerp(ref temp2, v1, v3, t);
-                //画线或光栅化
-                outValue.Item1 = new Triangle(temp1, temp2, v1, startIndex + 1);
+                Vertex temp23 = new Vertex();
+                t = pv3 / dv2v3;
+                temp23.point.x = Mathf.Lerp(v3.point.x, v2.point.x, t);
+                temp23.point.y = Mathf.Lerp(v3.point.y, v2.point.y, t);
+                temp23.point.z = Mathf.Lerp(v3.point.z, v2.point.z, t);
+                Mathf.Lerp(ref temp23, v3, v2, t);
+               
+                outValue.Item1 = new Triangle(temp13, temp23, v3);
                 return true;
             }
-            else if (projectV1 < distance && projectV2 > distance && projectV3 < distance)//只有v2在内
+            if (!checkIsIn(projectV1, dis) && checkIsIn(projectV2, dis) && !checkIsIn(projectV3, dis))//v1 v3在外面
             {
-                Vertex temp1 = new Vertex();
+                Vertex temp23 = new Vertex();
                 t = pv2 / dv2v3;
-                temp1.point.x = Mathf.Lerp(v2.point.x, v3.point.x, t);
-                temp1.point.y = Mathf.Lerp(v2.point.y, v3.point.y, t);
-                temp1.point.z = Mathf.Lerp(v2.point.z, v3.point.z, t);
-                Mathf.Lerp(ref temp1, v2, v3, t);
+                temp23.point.x = Mathf.Lerp(v2.point.x, v3.point.x, t);
+                temp23.point.y = Mathf.Lerp(v2.point.y, v3.point.y, t);
+                temp23.point.z = Mathf.Lerp(v2.point.z, v3.point.z, t);
+                Mathf.Lerp(ref temp23, v2, v3, t);
 
-                Vertex temp2 = new Vertex();
+                Vertex temp12 = new Vertex();
                 t = pv2 / dv1v2;
-                temp2.point.x = Mathf.Lerp(v2.point.x, v1.point.x, t);
-                temp2.point.y = Mathf.Lerp(v2.point.y, v1.point.y, t);
-                temp2.point.z = Mathf.Lerp(v2.point.z, v1.point.z, t);
-                Mathf.Lerp(ref temp2, v2, v1, t);
-                //画线或光栅化
-                clipQueue.Enqueue(new Triangle(temp1, temp2, v2, startIndex + 1));
+                temp12.point.x = Mathf.Lerp(v2.point.x, v1.point.x, t);
+                temp12.point.y = Mathf.Lerp(v2.point.y, v1.point.y, t);
+                temp12.point.z = Mathf.Lerp(v2.point.z, v1.point.z, t);
+                Mathf.Lerp(ref temp12, v2, v1, t);
+
+                outValue.Item1 = new Triangle(temp23, temp12, v2);
                 return true;
             }
-            else if (projectV1 < distance && projectV2 < distance && projectV3 > distance)//只有v3在内
+            if (checkIsIn(projectV1, dis) && !checkIsIn(projectV2, dis) && !checkIsIn(projectV3, dis))//v2 v3在外面
             {
-                Vertex temp1 = new Vertex();
-                t = pv3 / dv1v3;
-                temp1.point.x = Mathf.Lerp(v3.point.x, v1.point.x, t);
-                temp1.point.y = Mathf.Lerp(v3.point.y, v1.point.y, t);
-                temp1.point.z = Mathf.Lerp(v3.point.z, v1.point.z, t);
-                Mathf.Lerp(ref temp1, v3, v1, t);
+                Vertex temp12 = new Vertex();
+                t = pv1 / dv1v2;
+                temp12.point.x = Mathf.Lerp(v1.point.x, v2.point.x, t);
+                temp12.point.y = Mathf.Lerp(v1.point.y, v2.point.y, t);
+                temp12.point.z = Mathf.Lerp(v1.point.z, v2.point.z, t);
+                Mathf.Lerp(ref temp12, v1, v2, t);
 
-                Vertex temp2 = new Vertex();
-                t = pv3 / dv2v3;
-                temp2.point.x = Mathf.Lerp(v3.point.x, v2.point.x, t);
-                temp2.point.y = Mathf.Lerp(v3.point.y, v2.point.y, t);
-                temp2.point.z = Mathf.Lerp(v3.point.z, v2.point.z, t);
-                Mathf.Lerp(ref temp2, v3, v2, t);
-                //画线或光栅化
-                clipQueue.Enqueue(new Triangle(temp1, temp2, v3, startIndex + 1));
+                Vertex temp13 = new Vertex();
+                t = pv1 / dv1v3;
+                temp13.point.x = Mathf.Lerp(v1.point.x, v3.point.x, t);
+                temp13.point.y = Mathf.Lerp(v1.point.y, v3.point.y, t);
+                temp13.point.z = Mathf.Lerp(v1.point.z, v3.point.z, t);
+                Mathf.Lerp(ref temp13, v1, v3, t);
+
+                outValue.Item1 = new Triangle(temp12, temp13, v1);
                 return true;
             }
             return false;
         }
-
-        #endregion
-
 
     }
 }

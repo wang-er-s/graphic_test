@@ -60,7 +60,7 @@
             this.TextureBtn.Name = "TextureBtn";
             this.TextureBtn.Size = new System.Drawing.Size(75, 23);
             this.TextureBtn.TabIndex = 2;
-            this.TextureBtn.Text = "贴图";
+            this.TextureBtn.Text = "显示贴图";
             this.TextureBtn.UseVisualStyleBackColor = true;
             this.TextureBtn.Click += new System.EventHandler(this.Texture_Click);
             // 

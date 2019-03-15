@@ -13,12 +13,6 @@ namespace _3DDataType
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new RenderDemo());
-            //for (float i = 0; i < 10; i+=0.05f)
-            //{
-            //    Console.WriteLine(i +"   "+ Math.Cos(i));
-            //}
-            //Console.ReadKey();
-            //ss
         }
     }
 }

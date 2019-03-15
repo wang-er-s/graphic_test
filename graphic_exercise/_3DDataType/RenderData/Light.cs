@@ -44,7 +44,7 @@ namespace _3DDataType.RenderData
 
             Color specularColor = mesh.material.ks * specularLight * light.lightColor;
 
-            vertex.lightingColor = emissiveColor+  ambientColor + diffuseColor + specularColor;
+            vertex.lightingColor = emissiveColor + ambientColor + diffuseColor + specularColor;
 
         }
     }
