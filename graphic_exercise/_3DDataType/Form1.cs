@@ -44,7 +44,7 @@ namespace _3DDataType
 
         private void RenderDemo_Load(object sender, EventArgs e)
         {
-            Image img = Image.FromFile(@"F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\Texture\texture.jpg");
+            Image img = Image.FromFile(Environment.CurrentDirectory + @"\Texture\texture.jpg");
             texture = new Bitmap(img, imgWidth, imgHeight);
             InitTexture();
             rendMode = RenderMode.Textured;
