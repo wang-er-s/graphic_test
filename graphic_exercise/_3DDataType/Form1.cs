@@ -719,6 +719,8 @@ namespace _3DDataType
             }
         }
 
+        #region 裁剪
+
         List<ValueTuple<Vector3, int, Func<float, int, bool>>> normalAndDisList = new List<(Vector3, int, Func<float, int, bool>)>()
         {
             new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,0,-1),-1,(view,dis)=>view>dis),//前
@@ -897,6 +899,6 @@ namespace _3DDataType
             }
             return false;
         }
-
+        #endregion
     }
 }
