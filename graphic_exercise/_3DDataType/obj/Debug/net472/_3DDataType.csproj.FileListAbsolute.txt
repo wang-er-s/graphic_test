@@ -3,9 +3,10 @@ F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\bin\Debug\net472\_3DDataTyp
 F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\net472\_3DDataType.csprojAssemblyReference.cache
 F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\net472\_3DDataType.csproj.ResolveComReference.cache
 F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\net472\_3DDataType.csproj.CoreCompileInputs.cache
-F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\net472\_3DDataType.AssemblyInfoInputs.cache
 F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\net472\_3DDataType.AssemblyInfo.cs
 F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\net472\_3DDataType.exe
 F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\net472\_3DDataType.pdb
 F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\net472\_3DDataType.Form1.resources
 F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\obj\Debug\net472\_3DDataType.csproj.GenerateResource.cache
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\bin\Debug\net472\_3DDataType.runtimeconfig.json
+F:\SVN\graphic_exercise\graphic_exercise\_3DDataType\bin\Debug\net472\_3DDataType.runtimeconfig.dev.json

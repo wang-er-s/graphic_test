@@ -25,10 +25,5 @@
   },
   "frameworks": {
     "net472": {}
-  },
-  "runtimes": {
-    "win7-x86": {
-      "#import": []
-    }
   }
 }

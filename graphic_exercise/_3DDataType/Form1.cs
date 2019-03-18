@@ -21,7 +21,6 @@ namespace _3DDataType
         private Bitmap texture;
         private Bitmap frameBuff;
         private Graphics frameG;
-        private float[,] zBuff; //z缓冲
         private Mesh mesh;
         private Light light;
         private Camera camera;
@@ -44,7 +43,7 @@ namespace _3DDataType
 
         private void RenderDemo_Load(object sender, EventArgs e)
         {
-            Image img = Image.FromFile(Environment.CurrentDirectory + @"\Texture\texture.jpg");
+            Image img = Image.FromFile(Environment.CurrentDirectory + @"\..\..\..\Texture\texture.jpg");
             texture = new Bitmap(img, imgWidth, imgHeight);
             InitTexture();
             rendMode = RenderMode.Textured;
@@ -52,14 +51,11 @@ namespace _3DDataType
             isOpenTexture = true;
             frameBuff = new Bitmap(width, height);
             frameG = Graphics.FromImage(frameBuff);
-            zBuff = new float[width, height];
             ambientColor = new Color(0.1f, 0.1f, 0.1f);
             mesh = new Mesh(CubeTestData.PointList, CubeTestData.Indexs, CubeTestData.UVs, CubeTestData.VertColors,
                 CubeTestData.Normals, QuadTestData.Mat);
-            //定义光照
             light = new Light(new Vector3(0, 10, 0), new Color(1, 1, 1));
-            //定义相机
-            camera = new Camera(new Vector4(0, 4, 5, 1), new Vector4(0, 1, 0,0), new Vector4(0, 4, 6, 1),
+            camera = new Camera(new Vector4(0, 4, 2, 1), new Vector4(0, 1, 0,0), new Vector4(0, 4, 6, 1),
                 (float) Math.PI /3, width / (float) height, 5, 30);
 
             MouseDown += OnMouseDown;
@@ -79,6 +75,21 @@ namespace _3DDataType
 
         #region 按钮按键和鼠标事件
 
+        private void RenderBtn_Click(object sender, EventArgs e)
+        {
+            switch (rendMode)
+            {
+                case RenderMode.Wireframe:
+                    rendMode = RenderMode.Textured;
+                    RenderBtn.Text = "贴图";
+                    break;
+                case RenderMode.Textured:
+                    rendMode = RenderMode.Wireframe;
+                    RenderBtn.Text = "线框";
+                    break;
+            }
+        }
+
         private void Texture_Click(object sender, EventArgs e)
         {
             isOpenTexture = !isOpenTexture;
@@ -97,7 +108,6 @@ namespace _3DDataType
         private int startXPos = 0;
         private float startYPos = 0;
         private bool canRotate = false;
-        private Vector4 tempPos;
         private void OnMouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -134,7 +144,7 @@ namespace _3DDataType
             Vector4 lookPos = camera.lookAt - camera.eyePosition;
             lookPos = Matrix4x4.ArbitraryAxis(right, rotY) * Matrix4x4.RotateY(rotX) * lookPos;
             camera.lookAt = lookPos + camera.eyePosition;
-            //camera.up = Vector4.Cross( camera.lookAt,right).Normalize();
+            camera.up = Vector4.Cross( camera.lookAt,right).Normalize();
         }
 
         private void OnLeftKeyDown(object sender,KeyPressEventArgs e)
@@ -194,7 +204,7 @@ namespace _3DDataType
                 ClearBuff();
 
                 //*Matrix4x4.RotateX(rot)
-                Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 3, 15)) * Matrix4x4.RotateY(0) *
+                Matrix4x4 worldMatrix = Matrix4x4.Translate(new Vector3(0, 3, 12)) * Matrix4x4.RotateY(0) *
                                         Matrix4x4.RotateX(-0.3f) * Matrix4x4.RotateZ(0);
                 Matrix4x4 viewMatrix = Camera.BuildViewMatrix(camera.eyePosition, camera.up, camera.lookAt);
                 Matrix4x4 projectionMatrix =
@@ -248,12 +258,6 @@ namespace _3DDataType
             SetProjectionTransform(p, ref p2);
             SetProjectionTransform(p, ref p3);
 
-            //简单剔除
-            if (Clip(p1) == false && Clip(p2) == false && Clip(p3) == false)
-            {
-                return;
-            }
-
             // TODO 上下这两个都需要透视除法 cvv裁切
             TransformToScreen(ref p1);
             TransformToScreen(ref p2);
@@ -263,13 +267,11 @@ namespace _3DDataType
 
             if (isCull)
             {
-                ValueTuple<Triangle, Triangle, int> outValue = new ValueTuple<Triangle, Triangle, int>(
-                    new Triangle(p1, p2, p3),new Triangle(new Vertex(),new Vertex(),new Vertex()) ,1);
-                Clip2(new Triangle(p1, p2, p3), ref outValue);
-                Rasterization(outValue.Item1[0], outValue.Item1[1], outValue.Item1[2]);
-                if (outValue.Item3 == 2)
+                List<Triangle> outValue;
+                CubeClip(new Triangle(p1, p2, p3), out outValue);
+                for (int i = 0; i < outValue.Count; i++)
                 {
-                    Rasterization(outValue.Item2[0], outValue.Item2[1], outValue.Item2[2]);
+                    Rasterization(outValue[i][0], outValue[i][1], outValue[i][2]);
                 }
             }
             else
@@ -280,6 +282,7 @@ namespace _3DDataType
 
         void Rasterization(Vertex p1, Vertex p2, Vertex p3)
         {
+            if (Clip(p1) && Clip(p2) && Clip(p3)) return;
             if (rendMode == RenderMode.Wireframe)
             {
                 BresenhamDrawLine(p1, p2);
@@ -290,6 +293,13 @@ namespace _3DDataType
             {
                 TriangleRasterization(p1, p2, p3);
             }
+        }
+
+        bool Clip(Vertex v)
+        {
+            if (v.point.z < -1 || v.point.z > 1)
+                return true;
+            return false;
         }
 
         /// <summary>
@@ -347,29 +357,22 @@ namespace _3DDataType
         /// 检查是否这个顶点是否在视锥体内
         /// </summary>
         /// <returns>是否通过剪裁</returns>
-        private bool Clip(Vertex v)
-        {
-            //cvv为 xyz 需要都需要在-1,1内
-            if (v.point.x >= -v.point.w && v.point.x <= v.point.w &&
-                v.point.y >= -v.point.w && v.point.y <= v.point.w &&
-                v.point.z >= -v.point.w && v.point.z <= v.point.w)
-            {
-                return true;
-            }
+        //private bool Clip(Vertex v)
+        //{
+        //    //cvv为 xyz 需要都需要在-1,1内
+        //    if (v.point.x < width && v.point.x > 0 &&
+        //        v.point.y < height && v.point.y > 0
+        //        && v.point.z < 1 && v.point.z > -1)
+        //    {
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         private void ClearBuff()
         {
             frameG.Clear(System.Drawing.Color.AliceBlue);
-            for (int i = 0; i < zBuff.GetLength(0); i++)
-            {
-                for (int j = 0; j < zBuff.GetLength(1); j++)
-                {
-                    zBuff[i, j] = 1;
-                }
-            }
         }
 
         #region 三角形光栅化算法
@@ -570,16 +573,15 @@ namespace _3DDataType
         #region 2DLine 算法
         private void BresenhamDrawLine(Vertex p1, Vertex p2)
         {
-            int startX = (int)(Math.Round(p1.point.x, MidpointRounding.AwayFromZero));
-            int startY = (int)(Math.Round(p1.point.y, MidpointRounding.AwayFromZero));
-            int endX = (int)(Math.Round(p2.point.x, MidpointRounding.AwayFromZero));
-            int endY = (int)(Math.Round(p2.point.y, MidpointRounding.AwayFromZero));
+            int startX = (int)Math.Ceiling(p1.point.x);
+            int startY = (int)Math.Ceiling(p1.point.y);
+            int endX = (int)Math.Ceiling(p2.point.x);
+            int endY = (int)Math.Ceiling(p2.point.y);
             int curX = startX, curY = startY;
             float disX = endX - startX;
-            float disY = endY - startY;
+            int disY = endY - startY;
             int stepx = Math.Sign(disX);
             int stepy = Math.Sign(disY);
-            //插值因子
             float t = 0;
             float e = -0.5f;
             float k = 0;
@@ -591,9 +593,10 @@ namespace _3DDataType
                     disX = int.MaxValue;
                 }
                 k = Math.Abs(disY / disX);
+                disX = 1 / disX;
                 while (true)
                 {
-                    t = (curX - startX) / disX;
+                    t = (curX - startX) * disX;
                     //混合颜色和贴图
                     MixColor(p1, p2, t, curX, curY);
                     e += k;
@@ -613,9 +616,10 @@ namespace _3DDataType
                     disY = int.MaxValue;
                 }
                 k = Math.Abs(disX / disY);
+                disY = 1 / disY;
                 while (true)
                 {
-                    t = (curY - startY) / disY;
+                    t = (curY - startY) * disY;
                     //混合颜色和贴图
                     MixColor(p1, p2, t, curX, curY);
                     e += k;
@@ -634,8 +638,7 @@ namespace _3DDataType
         {
             Color finalColor = new Color(1, 1, 1);
             float w = Mathf.Lerp(v1.depth, v2.depth, t);
-            if (w == 0) w = int.MaxValue;
-            w = 1 / w;
+            w = w == 0 ? 0 : 1 / w;
             if (isOpenLight)
             {
                 Mathf.Lerp(ref finalColor, v1.lightingColor, v2.lightingColor, t);
@@ -704,53 +707,53 @@ namespace _3DDataType
 
         #endregion
 
-        private void RenderBtn_Click(object sender, EventArgs e)
-        {
-            switch (rendMode)
-            {
-                case RenderMode.Wireframe:
-                    rendMode = RenderMode.Textured;
-                    RenderBtn.Text = "贴图";
-                    break;
-                case RenderMode.Textured:
-                    rendMode = RenderMode.Wireframe;
-                    RenderBtn.Text = "线框";
-                    break;
-            }
-        }
+
 
         #region 裁剪
 
         List<ValueTuple<Vector3, int, Func<float, int, bool>>> normalAndDisList = new List<(Vector3, int, Func<float, int, bool>)>()
         {
-            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,0,-1),-1,(view,dis)=>view>dis),//前
-            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,0,1),1,(view,dis)=>view<dis),//后
+            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,0,1),-1,(view,dis)=>view>dis),//前
+            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,0,-1),-1,(view,dis)=>view>dis),//后
             new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(1,0,0),1,(view,dis)=>view>dis),//左
             new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(-1,0,0),-799,(view,dis)=>view>dis),//右
             new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,-1,0),0,(view,dis)=>view<dis),//上
-            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,1,0),580,(view,dis)=>view<dis),//下
+            new ValueTuple<Vector3,int,Func<float,int,bool>>(new Vector3(0,1,0),599,(view,dis)=>view<dis),//下
         };
 
-        private void Clip2(Triangle triangle,ref ValueTuple<Triangle, Triangle, int> outValue)
-        {
-            bool isClip = false;
+        private Queue<Triangle> clipQueue = new Queue<Triangle>();
 
-            foreach (var item in normalAndDisList)
+        private void CubeClip(Triangle triangle,out List<Triangle> outValue)
+        {
+            outValue = new List<Triangle>();
+            clipQueue.Enqueue(triangle);
+            bool isClip = false;
+            Triangle temp;
+            while (clipQueue.Count > 0)
             {
+                temp = clipQueue.Dequeue();
+                for (int i = temp.startIndex; i < normalAndDisList.Count; i++)
+                {
+                    if (!isClip)
+                    {
+                        isClip = CubeClip(temp[0], temp[1], temp[2], normalAndDisList[i], i);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
                 if (!isClip)
                 {
-                    isClip = ClipTest(triangle[0], triangle[1], triangle[2], item, ref outValue);
+                    outValue.Add(temp);
                 }
-                else
-                {
-                    break;
-                }
+                isClip = false;
             }
+            
         }
 
-        bool ClipTest(Vertex v1, Vertex v2, Vertex v3, ValueTuple<Vector3, int, Func<float, int, bool>> norAndDis, ref ValueTuple<Triangle, Triangle, int> outValue)
+        bool CubeClip(Vertex v1, Vertex v2, Vertex v3, ValueTuple<Vector3, int, Func<float, int, bool>> norAndDis,int startIndex)
         {
-            outValue.Item3 = 1;
             Vector3 normal = norAndDis.Item1;
             int dis = norAndDis.Item2;
             Func<float, int, bool> checkIsIn = norAndDis.Item3;
@@ -792,9 +795,8 @@ namespace _3DDataType
                 temp13.point.w = 1;
                 Mathf.Lerp(ref temp13, v3, v1, t);
 
-                outValue.Item1 = new Triangle(temp13, temp12, v2);
-                outValue.Item2 = new Triangle(temp13, v2, v3);
-                outValue.Item3 = 2;
+                clipQueue.Enqueue(new Triangle(temp13, temp12, v2, startIndex + 1));
+                clipQueue.Enqueue(new Triangle(temp13, v2, v3, startIndex + 1));
                 return true;
             }
             if (checkIsIn(projectV1, dis) && !checkIsIn(projectV2, dis) && checkIsIn(projectV3, dis))//v2在外面
@@ -814,9 +816,8 @@ namespace _3DDataType
                 temp23.point.z = Mathf.Lerp(v3.point.z, v2.point.z, t);
                 Mathf.Lerp(ref temp23, v3, v2, t);
 
-                outValue.Item1 = new Triangle(temp12, temp23, v3);
-                outValue.Item2 = new Triangle(temp12, v3, v1);
-                outValue.Item3 = 2;
+                clipQueue.Enqueue(new Triangle(temp12, temp23, v3, startIndex + 1));
+                clipQueue.Enqueue(new Triangle(temp12, v3, v1, startIndex + 1));
                 return true;
             }
             if (checkIsIn(projectV1, dis) && checkIsIn(projectV2, dis) && !checkIsIn(projectV3, dis))//v3在外面
@@ -835,9 +836,8 @@ namespace _3DDataType
                 temp13.point.z = Mathf.Lerp(v1.point.z, v3.point.z, t);
                 Mathf.Lerp(ref temp13, v1, v3, t);
 
-                outValue.Item1 = new Triangle(temp23, temp13, v1);
-                outValue.Item2 = new Triangle(temp23, v1, v2);
-                outValue.Item3 = 2;
+                clipQueue.Enqueue(new Triangle(temp23, temp13, v1, startIndex + 1));
+                clipQueue.Enqueue(new Triangle(temp23, v1, v2, startIndex + 1));
                 return true;
             }
             if (!checkIsIn(projectV1, dis) && !checkIsIn(projectV2, dis) && checkIsIn(projectV3, dis))//v1 v2在外面
@@ -855,8 +855,8 @@ namespace _3DDataType
                 temp23.point.y = Mathf.Lerp(v3.point.y, v2.point.y, t);
                 temp23.point.z = Mathf.Lerp(v3.point.z, v2.point.z, t);
                 Mathf.Lerp(ref temp23, v3, v2, t);
-               
-                outValue.Item1 = new Triangle(temp13, temp23, v3);
+
+                clipQueue.Enqueue(new Triangle(temp13, temp23, v3, startIndex + 1));
                 return true;
             }
             if (!checkIsIn(projectV1, dis) && checkIsIn(projectV2, dis) && !checkIsIn(projectV3, dis))//v1 v3在外面
@@ -875,7 +875,7 @@ namespace _3DDataType
                 temp12.point.z = Mathf.Lerp(v2.point.z, v1.point.z, t);
                 Mathf.Lerp(ref temp12, v2, v1, t);
 
-                outValue.Item1 = new Triangle(temp23, temp12, v2);
+                clipQueue.Enqueue( new Triangle(temp23, temp12, v2, startIndex + 1));
                 return true;
             }
             if (checkIsIn(projectV1, dis) && !checkIsIn(projectV2, dis) && !checkIsIn(projectV3, dis))//v2 v3在外面
@@ -894,7 +894,7 @@ namespace _3DDataType
                 temp13.point.z = Mathf.Lerp(v1.point.z, v3.point.z, t);
                 Mathf.Lerp(ref temp13, v1, v3, t);
 
-                outValue.Item1 = new Triangle(temp12, temp13, v1);
+                clipQueue.Enqueue( new Triangle(temp12, temp13, v1, startIndex + 1));
                 return true;
             }
             return false;

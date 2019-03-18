@@ -19,9 +19,5 @@ namespace _3DDataType
         /// 纹理
         /// </summary>
         Textured,
-        /// <summary>
-        /// 顶点色
-        /// </summary>
-        VertexColor
     }
 }

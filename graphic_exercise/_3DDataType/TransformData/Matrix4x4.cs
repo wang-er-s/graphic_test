@@ -446,8 +446,6 @@ namespace _3DDataType
         /// <summary>
         /// 求逆矩阵
         /// </summary>
-        /// <param name="arr"></param>
-        /// <returns></returns>
         public Matrix4x4 Inverse()
         {
             Set(Inverse(ToArray()));
