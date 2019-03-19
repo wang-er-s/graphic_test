@@ -79,9 +79,12 @@ namespace _3DDataType
             {
                 t = 1;
             }
-            c.R = t * c2.R + (1 - t) * c1.R;
-            c.G = t * c2.G + (1 - t) * c1.G;
-            c.B = t * c2.B + (1 - t) * c1.B;
+            c.R = c1.R + (c2.R - c1.R) * t;
+            c.G = c1.G + (c2.G - c1.G) * t;
+            c.B = c1.B + (c2.B - c1.B) * t;
+            //c.R = t * c2.R + (1 - t) * c1.R;
+            //c.G = t * c2.G + (1 - t) * c1.G;
+            //c.B = t * c2.B + (1 - t) * c1.B;
         }
 
         /// <summary>

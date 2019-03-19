@@ -13,6 +13,17 @@ namespace _3DDataType
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new RenderDemo());
+
+            //     Matrix4x4 m1 = new Matrix4x4
+            //(
+            //    1, 1, 2, 3,
+            //    3, 1, 2, 3,
+            //    2, 3, 1, 3,
+            //    5, 5, 5, 1
+            //);
+            //     m1.Inverse();
+
+
         }
     }
 }
