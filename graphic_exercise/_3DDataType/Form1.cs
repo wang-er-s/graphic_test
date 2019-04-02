@@ -1,4 +1,4 @@
-﻿using _3DDataType.RenderData;
+using _3DDataType.RenderData;
 using _3DDataType.Test;
 using System;
 using System.Collections.Generic;
@@ -63,7 +63,7 @@ namespace _3DDataType
                 CubeTestData.Normals, QuadTestData.Mat);
             light = new Light(new Vector3(0, 10, 0), new Color(1, 1, 1));
             camera = new Camera(new Vector4(0, 4, 1, 1), new Vector4(0, 1, 0,0), new Vector4(0, 4, 6, 1),
-                (float) Math.PI /3, width / (float) height, 1, 30);
+                (float) Math.PI /3, width / (float) height, 3, 30);
 
             MouseDown += OnMouseDown;
             MouseUp += OnMouseUp;
@@ -152,8 +152,12 @@ namespace _3DDataType
             Vector4 right = Vector4.Cross(camera.up, forward);
             Vector4 lookPos = camera.lookAt - camera.eyePosition;
             lookPos = Matrix4x4.ArbitraryAxis(right, rotY) * Matrix4x4.RotateY(rotX) * lookPos;
-            camera.lookAt = lookPos + camera.eyePosition;
-            //camera.up = Vector4.Cross( camera.lookAt,right).Normalize();
+
+            if (Vector4.GetNormalize(lookPos).y >= -0.99f)
+            {
+                camera.lookAt = lookPos + camera.eyePosition;
+            }
+            
         }
 
         private void OnLeftKeyDown(object sender,KeyPressEventArgs e)
@@ -183,7 +187,6 @@ namespace _3DDataType
             {
                 camera.eyePosition -= forward * 0.1f;
             }
-            camera.up = up;
         }
 
         
@@ -242,8 +245,6 @@ namespace _3DDataType
         /// </summary>
         private void DrawTriangle(Vertex p1, Vertex p2, Vertex p3, Matrix4x4 m, Matrix4x4 v, Matrix4x4 p)
         {
-            //--------------------几何阶段---------------------------
-
             SetModelToWorld(m, ref p1);
             SetModelToWorld(m, ref p2);
             SetModelToWorld(m, ref p3);
@@ -272,13 +273,19 @@ namespace _3DDataType
             SetProjectionTransform(p, ref p2);
             SetProjectionTransform(p, ref p3);
 
-            // TODO 上下这两个都需要透视除法 cvv裁切
+            //超出屏幕外剔除
+            if (Exclude(p1) == false && Exclude(p2) == false && Exclude(p3) == false)
+            {
+                return;
+            }
+
+            // 变换到屏幕坐标
             TransformToScreen(ref p1);
             TransformToScreen(ref p2);
             TransformToScreen(ref p3);
 
             //--------------------光栅化阶段---------------------------
-
+            if (Clip(p1) && Clip(p2) && Clip(p3)) return;
             if (isCull)
             {
                 List<Triangle> outValue;
@@ -296,7 +303,6 @@ namespace _3DDataType
 
         void Rasterization(Vertex p1, Vertex p2, Vertex p3)
         {
-            if (Clip(p1) && Clip(p2) && Clip(p3)) return;
             if (rendMode == RenderMode.Wireframe)
             {
                 BresenhamDrawLine(p1, p2);
@@ -309,10 +315,20 @@ namespace _3DDataType
             }
         }
 
-        bool Clip(Vertex v)
+        private bool Clip(Vertex v)
         {
-            if (v.point.z < -1 || v.point.z > 1)
+            if ( v.point.z < -1 || v.point.z > 1)
                 return true;
+            return false;
+        }
+
+        private bool Exclude(Vertex v)
+        {
+            if (v.point.x >= -v.point.w && v.point.x <= v.point.w
+                && v.point.y >= -v.point.w && v.point.y <= v.point.w)
+            {
+                return true;
+            }
             return false;
         }
 
@@ -710,8 +726,6 @@ namespace _3DDataType
         }
 
         #endregion
-
-
 
         #region 裁剪
 
