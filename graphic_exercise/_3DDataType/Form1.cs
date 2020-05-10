@@ -153,7 +153,7 @@ namespace _3DDataType
             Vector4 lookPos = camera.lookAt - camera.eyePosition;
             lookPos = Matrix4x4.ArbitraryAxis(right, rotY) * Matrix4x4.RotateY(rotX) * lookPos;
 
-            if (Vector4.GetNormalize(lookPos).y >= -0.99f)
+            if (lookPos.Normalize().y >= -0.99f)
             {
                 camera.lookAt = lookPos + camera.eyePosition;
             }
